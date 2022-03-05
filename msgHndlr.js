@@ -600,9 +600,6 @@ module.exports = msgHandler = async (client, message) => {
 					if (!isNaN(day) || !isNaN(month) || !isNaN(year)) {
 						client.reply(from, 'Essa data tá errada fiote. Mande no formato DD/MM/YYYY', id);
 					} else {
-						if (day.length === 1) day = `0${day}`;
-						if (month.length === 1) month = `0${month}`;
-
 						let date = new Date(year, month - 1, day);
 						let today = new Date();
 						let diff = date.getTime() - today.getTime();
