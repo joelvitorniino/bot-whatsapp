@@ -98,6 +98,10 @@ module.exports = msgHandler = async (client, message) => {
 		const falas = commands.toLowerCase();
 		const command = commands.toLowerCase().split(' ')[0] || '';
 		const args = commands.split(' ');
+		
+		if(isGroupMsg) {
+			return;
+		}
 
 		const msgs = (message) => {
 			if (command.startsWith('!')) {
@@ -143,20 +147,17 @@ module.exports = msgHandler = async (client, message) => {
 				color(formattedTitle)
 			);
 		//if (!isGroupMsg && !command.startsWith('!')) console.log('\x1b[1;33m~\x1b[1;37m>', '[\x1b[1;31mMSG\x1b[1;37m]', time, color(body), 'from', color(pushname))
+		
 		if (isGroupMsg && !command.startsWith('!'))
 			console.log('\x1b[1;33m~\x1b[1;37m>', '[\x1b[1;31mMSG\x1b[1;37m]', time, color(body), 'from', color(pushname), 'in', color(formattedTitle));
 		if (isBlocked) return;
 		//if (!isOwner) return
 
-		if(isGroupMsg) {
-			return;
-		}
 
 		console.log('FROM ===>', color(pushname));
 		console.log('ARGUMENTOS ===>', color(args));
 		console.log('FALAS ====>', color(falas));
 		console.log('COMANDO ====>', color(command));
-		console.log('ALGUEM FALOU DE MIM =====>', color(falas.indexOf('bruce') != -1));
 
 		let objeto = JSON.parse(await fs.readFileSync('./lib/dialogflowActive.json', { encoding: 'utf8', flag: 'r' }));
 
@@ -171,29 +172,79 @@ module.exports = msgHandler = async (client, message) => {
 			}
 		}
 
-		if (falas.indexOf('bruce') != -1 || falas.indexOf('oi bruce') != -1 || falas.indexOf('olá bruce') != -1) {
-			await client.sendButtons(
-				from,
-				'Esse menu foi ativado, por que você falou o meu nome, em que posso ser útil?',
-				[
-					{
-						id: 'id1',
-						text: 'Menu do bot',
-					},
-					{
-						id: 'id2',
-						text: 'Quem sou eu?',
-					},
-					{
-						id: 'id3',
-						text: 'Nada, obrigado.',
-					},
-				],
-				'Oi? ta falando de mim? Em que posso te ajudar?'
-			);
+		if (falas.indexOf('oi') != -1 ||
+		falas.indexOf('fala ai') != -1 ||
+		falas.indexOf('fala ae') != -1 ||
+		falas.indexOf('blz') != -1 ||
+		falas.indexOf('beleza') != -1 ||
+		falas.indexOf('salve') != -1 ||
+		falas.indexOf('olá') != -1 ||
+		falas.indexOf('oi bruce') != -1 ||
+		falas.indexOf('olá bruce') != -1 ||
+		falas.indexOf('oi kauã') != -1 ||
+		falas.indexOf('olá kauã') != -1 ||
+		falas.indexOf('oi kaua') != -1 ||
+		falas.indexOf('olá kaua') != -1) {
+			// await client.sendButtons(
+			// 	from,
+			// 	'Esse menu foi ativado, por que você falou o meu nome, em que posso ser útil?',
+			// 	[
+			// 		{
+			// 			id: 'id1',
+			// 			text: 'Menu do bot',
+			// 		},
+			// 		{
+			// 			id: 'id2',
+			// 			text: 'Quem sou eu?',
+			// 		},
+			// 		{
+			// 			id: 'id3',
+			// 			text: 'Nada, obrigado.',
+			// 		},
+			// 	],
+			// 	'Oi? ta falando de mim? Em que posso te ajudar?'
+			// );
+			console.log('MENU ATIVADO');
+			falas.indexOf('oi') != -1 ? console.log('oi') : null;
+			falas.indexOf('fala ai') != -1 ? console.log('fala ai') : null;
+			falas.indexOf('fala ae') != -1 ? console.log('fala ae') : null;
+			falas.indexOf('blz') != -1 ? console.log('blz') : null;
+			falas.indexOf('beleza') != -1 ? console.log('beleza') : null;
+			falas.indexOf('salve') != -1 ? console.log('salve') : null;
+			falas.indexOf('olá') != -1 ? console.log('olá') : null;
+			falas.indexOf('oi bruce') != -1 ? console.log('oi bruce') : null;
+			falas.indexOf('olá bruce') != -1 ? console.log('olá bruce') : null;
+			falas.indexOf('oi kauã') != -1 ? console.log('oi kauã') : null;
+			falas.indexOf('olá kauã') != -1 ? console.log('olá kauã') : null;
+			falas.indexOf('oi kaua') != -1 ? console.log('oi kaua') : null;
+			falas.indexOf('olá kaua') != -1 ? console.log('olá kaua') : null;
+			await client.sendText(from, `Oi, sou o Bruce, robô que auxilia o Kauã. Em que posso te ajudar?\nSe for só com ele, aguarda que ele já vem. 😊`);
 		}
-
+		
 		switch (falas) {
+			case 'figurinha':
+			case 'faz figurinha':
+			case 'sticker':
+				await client.sendText(from, 'Se for uma figurinha com imagem, mande-a com *!s* na legenda, e se for um gif mande-o com *!sg* na legenda.');
+				break;
+				
+			case 'seu pix':
+			case 'sua pix':
+			case 'sua chave pix':
+			case 'chave pix':
+			case 'pix':
+				await client.sendText(from, 'Minha chave pix é o meu email:');
+				await client.sendText(from, 'kaualandi@hotmail.com');
+				break;
+			case 'quanto te devo':
+			case 'quanto ti devo':
+			case 'quanto devo':
+			case 'te devendo':
+			case 'ti devendo':
+				await client.sendText(from, 'Oi, sou eu, o Bruce. Bom, a quantidade tem que ver com o Kauã, mas a chave pix é o email dele:');
+				await client.sendText(from, 'kaualandi@hotmail.com');
+				break;
+
 			case 'me ajuda bot':
 			case 'me ajuda':
 			case 'bot me ajuda':
@@ -246,21 +297,19 @@ module.exports = msgHandler = async (client, message) => {
 			case 'bom dia bot':
 			case 'Bom dia':
 			case 'bom dia':
-				await client.reply(from, 'Bom dia? so se for pra você que dormiu a noite toda...', id);
+				await client.reply(from, 'Bom dia! Bruce falando, aguarda por favor que o Kauã já vem.', id);
 				const gif3 = await fs.readFileSync('./media/tudosobcontrole.webp', { encoding: 'base64' });
 				await client.sendImageAsSticker(from, `data:image/gif;base64,${gif3.toString('base64')}`);
 				break;
 
 			case 'boa tarde bot':
-			case 'Boa tarde':
 			case 'boa tarde':
-				await client.reply(from, `Boa tarde, são ${moment().format('HH:mm')} e vc ta ai atoa ne? ligando pro seu chefe...`, id);
+				await client.reply(from, `Boa tarde! Bruce falando, aguarda por favor que o Kauã já vem.`, id);
 				break;
 
 			case 'boa noite bot':
-			case 'Boa noite':
 			case 'boa noite':
-				await client.reply(from, `Boa noite pra você também! já são ${moment().format('HH:mm')} to indo nessa também...`, id);
+				await client.reply(from, `Boa noite! Bruce falando, aguarda por favor que o Kauã já vem.`, id);
 				break;
 
 			case 'que dia e hoje bot':
@@ -449,7 +498,7 @@ module.exports = msgHandler = async (client, message) => {
 				let text2 = queryMeme[3] ?? '91545132';
 
 				let dataSend = `text0=${encodeURIComponent(text0)}&text1=${encodeURIComponent(text1)}&template_id=${text2}&username=${encodeURIComponent(
-					'jhowjhoe'
+					'kaualandi'
 				)}&password=${encodeURIComponent('sdVKRA2QZm9fQx!')}`;
 				let makeMeme = await axios({
 					method: 'post',
@@ -502,10 +551,6 @@ module.exports = msgHandler = async (client, message) => {
 				}
 
 				break;
-			case '!bateria':
-				let level = await client.getBatteryLevel();
-				await client.reply(from, `----------------------\nNível de bateria é de: ${JSON.stringify(level)}%\n----------------------`, id);
-				break;
 
 			case '!cep':
 				if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o cep?', id);
@@ -556,7 +601,7 @@ module.exports = msgHandler = async (client, message) => {
 				if (isMedia) {
 					if ((mimetype === 'video/mp4' && message.duration < 30) || (mimetype === 'image/gif' && message.duration < 30)) {
 						const mediaData = await decryptMedia(message, uaOverride);
-						client.reply(from, 'Já to fazendo a figurinha...', id);
+						client.reply(from, '⏳ Fazendo figurinha...', id);
 
 						await client.sendMp4AsSticker(from, `data:${mimetype};base64,${mediaData.toString('base64')}`, null, {
 							stickerMetadata: true,
@@ -573,6 +618,25 @@ module.exports = msgHandler = async (client, message) => {
 			case '!ajuda':
 			case '!menu':
 			case '!help':
+				// await client.sendButtons(
+					// 	from,
+					// 	'Esse menu foi ativado, por que você falou o meu nome, em que posso ser útil?',
+					// 	[
+					// 		{
+					// 			id: 'id1',
+					// 			text: 'Menu do bot',
+					// 		},
+					// 		{
+					// 			id: 'id2',
+					// 			text: 'Quem sou eu?',
+					// 		},
+					// 		{
+					// 			id: 'id3',
+					// 			text: 'Nada, obrigado.',
+					// 		},
+					// 	],
+					// 	'Oi? ta falando de mim? Em que posso te ajudar?'
+					// );
 				await client.sendText(from, help);
 				let batteryLevel = await client.getBatteryLevel();
 				let isPlugged = await client.getIsPlugged(from);
@@ -580,7 +644,7 @@ module.exports = msgHandler = async (client, message) => {
 
 				await client.reply(
 					from,
-					`----------------------\n*Status*: ${connectionState}\n*Bateria*: ${batteryLevel}%\n*Carregando*: ${
+					`----------------------\n*Status*: ${connectionState}\n*Carregando*: ${
 						isPlugged ? 'Sim' : 'Não'
 					}\n----------------------`,
 					id
@@ -608,6 +672,7 @@ module.exports = msgHandler = async (client, message) => {
 						let date = new Date(year, month - 1, day);
 						let today = new Date();
 						let diff = date.getTime() - today.getTime();
+						if (diff < 0) return client.reply(from, 'Essa data já passou, lembre-se de colocar o ano do próximo aniversário!', id);
 						let days = Math.floor(diff / (1000 * 60 * 60 * 24));
 						let hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
 						let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
