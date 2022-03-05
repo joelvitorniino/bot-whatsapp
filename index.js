@@ -1,5 +1,4 @@
 const { create, Client, decryptMedia, ev, SimpleListener, smartUserAgent, NotificationLanguage } = require('@open-wa/wa-automate')
-const welcome = require('./lib/welcome')
 const msgHandler = require('./msgHndlr')
 const options = require('./options')
 const { help } = require('./lib/help')
@@ -43,31 +42,6 @@ const start = async (client = new Client()) => {
 
         }))
 
-        client.onAddedToGroup(((chat) => {
-            let totalMem = chat.groupMetadata.participants.length
-            if (totalMem < 30) {
-                
-            	client.sendText(chat.id, `Opa, sou um bot, aqui só tem ${totalMem} membros?, se você quiser convidar bots fica a vontade, se precisar de ajuda basta escrever: *me ajuda*`)
-            
-            } else {
-                client.sendText(chat.groupMetadata.id, `Olá membros do grupo *${chat.contact.name} * obrigado por convidar este bot, para ver o menu envie *me ajuda*`)
-            }
-        }))
-
-        client.onGlobalParticipantsChanged((async (message) => {
-
-            await welcome(client, message)
-            //left(client, heuh)
-
-        }))
-
-       client.onIncomingCall( async (call) => {
-            console.log('ALGUEM ESTÁ LIGANDO ===>',call)
-
-            await client.sendText(call.peerJid, "Não consigo receber chamadas, você será bloqueado!")
-                    .then(() => client.contactBlock(call.peerJid))
-        });
-        
 }
 
 create(options(true, start))
