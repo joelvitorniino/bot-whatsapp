@@ -110,7 +110,7 @@ module.exports = msgHandler = async (client, message) => {
 		};
 
 		const mess = {
-			wait: '⏳ Fazendo a figurinha...',
+			wait: '⏳ Fazendo figurinha...',
 			error: {
 				St: '[❗] Envie uma imagem com uma legenda *!s* ou marque a imagem que já foi enviada',
 			},
@@ -123,7 +123,7 @@ module.exports = msgHandler = async (client, message) => {
 		const groupAdmins = isGroupMsg ? await client.getGroupAdmins(groupId) : '';
 		const isGroupAdmins = isGroupMsg ? groupAdmins.includes(sender.id) : false;
 		const isBotGroupAdmins = isGroupMsg ? groupAdmins.includes(botNumber + '@c.us') : false;
-		const ownerNumber = ['+5531984928178@c.us', '+5531984928178']; // replace with your whatsapp number
+		const ownerNumber = ['+5521999222644@c.us', '+5521999222644']; // replace with your whatsapp number
 		const isOwner = ownerNumber.includes(sender.id);
 		const isBlocked = blockNumber.includes(sender.id);
 		const uaOverride =
@@ -588,6 +588,35 @@ module.exports = msgHandler = async (client, message) => {
 				break;
 
 			case '':
+				break;
+
+			case '!aniversário':
+			case '!aniversario':
+				if (args.length === 1) {
+					client.reply(from, 'Como eu vou adivinhar a data? Mande no formato DD/MM/YYYY', id);
+				} else {
+					if (!args[1].includes('/')) {
+					    return client.reply(from, 'Essa data tá errada fiote. Mande no formato DD/MM/YYYY', id);
+					}
+					let date = args[1].split('/');
+					let {day, month, year} = date;
+					if (isNaN(day) || isNaN(month) || isNaN(year)) {
+						client.reply(from, 'Essa data tá errada fiote. Mande no formato DD/MM/YYYY', id);
+					} else {
+						if (day.lenght === 1) day = `0${day}`;
+						if (month.lenght === 1) month = `0${month}`;
+						
+						let date = new Date(year, month - 1, day);
+						let today = new Date();
+						let diff = date.getTime() - today.getTime();
+						let days = Math.floor(diff / (1000 * 60 * 60 * 24));
+						let hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+						let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+						let seconds = Math.floor((diff % (1000 * 60)) / 1000);
+						let message = `Faltam ${days} dias, ${hours} horas, ${minutes} minutos e ${seconds} segundos para o aniversário!`;
+						client.reply(from, message, id);
+					}
+				}
 				break;
 
 			case '!xagc':
