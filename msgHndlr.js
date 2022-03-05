@@ -172,12 +172,10 @@ module.exports = msgHandler = async (client, message) => {
 			}
 		}
 
-		if (falas.indexOf('oi') != -1 ||
+		if (falas.indexOf('oi ') != -1 ||
 		falas.indexOf('fala ai') != -1 ||
 		falas.indexOf('fala ae') != -1 ||
-		falas.indexOf('blz') != -1 ||
-		falas.indexOf('beleza') != -1 ||
-		falas.indexOf('salve') != -1 ||
+		falas.indexOf('salve ') != -1 ||
 		falas.indexOf('olá') != -1 ||
 		falas.indexOf('oi bruce') != -1 ||
 		falas.indexOf('olá bruce') != -1 ||
@@ -205,19 +203,6 @@ module.exports = msgHandler = async (client, message) => {
 			// 	'Oi? ta falando de mim? Em que posso te ajudar?'
 			// );
 			console.log('MENU ATIVADO');
-			falas.indexOf('oi') != -1 ? console.log('oi') : null;
-			falas.indexOf('fala ai') != -1 ? console.log('fala ai') : null;
-			falas.indexOf('fala ae') != -1 ? console.log('fala ae') : null;
-			falas.indexOf('blz') != -1 ? console.log('blz') : null;
-			falas.indexOf('beleza') != -1 ? console.log('beleza') : null;
-			falas.indexOf('salve') != -1 ? console.log('salve') : null;
-			falas.indexOf('olá') != -1 ? console.log('olá') : null;
-			falas.indexOf('oi bruce') != -1 ? console.log('oi bruce') : null;
-			falas.indexOf('olá bruce') != -1 ? console.log('olá bruce') : null;
-			falas.indexOf('oi kauã') != -1 ? console.log('oi kauã') : null;
-			falas.indexOf('olá kauã') != -1 ? console.log('olá kauã') : null;
-			falas.indexOf('oi kaua') != -1 ? console.log('oi kaua') : null;
-			falas.indexOf('olá kaua') != -1 ? console.log('olá kaua') : null;
 			await client.sendText(from, `Oi, sou o Bruce, robô que auxilia o Kauã. Em que posso te ajudar?\nSe for só com ele, aguarda que ele já vem. 😊`);
 		}
 		
