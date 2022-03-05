@@ -596,10 +596,15 @@ module.exports = msgHandler = async (client, message) => {
 					client.reply(from, 'Como eu vou adivinhar a data? Mande no formato DD/MM/YYYY', id);
 				} else {
 					let date = args[1].split('/');
-					let {day, month, year} = date;
-					if (!isNaN(day) || !isNaN(month) || !isNaN(year)) {
+					let day = date[0];
+					let month = date[1];
+					let year = date[2];
+					if (isNaN(day) || isNaN(month) || isNaN(year)) {
 						client.reply(from, 'Essa data tá errada fiote. Mande no formato DD/MM/YYYY', id);
 					} else {
+						day = parseInt(day);
+						month = parseInt(month);
+						year = parseInt(year);
 						let date = new Date(year, month - 1, day);
 						let today = new Date();
 						let diff = date.getTime() - today.getTime();
