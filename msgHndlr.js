@@ -595,17 +595,14 @@ module.exports = msgHandler = async (client, message) => {
 				if (args.length === 1) {
 					client.reply(from, 'Como eu vou adivinhar a data? Mande no formato DD/MM/YYYY', id);
 				} else {
-					if (!args[1].includes('/')) {
-					    return client.reply(from, 'Essa data tá errada fiote. Mande no formato DD/MM/YYYY', id);
-					}
 					let date = args[1].split('/');
 					let {day, month, year} = date;
-					if (isNaN(day) || isNaN(month) || isNaN(year)) {
+					if (!isNaN(day) || !isNaN(month) || !isNaN(year)) {
 						client.reply(from, 'Essa data tá errada fiote. Mande no formato DD/MM/YYYY', id);
 					} else {
-						if (day.lenght === 1) day = `0${day}`;
-						if (month.lenght === 1) month = `0${month}`;
-						
+						if (day.length === 1) day = `0${day}`;
+						if (month.length === 1) month = `0${month}`;
+
 						let date = new Date(year, month - 1, day);
 						let today = new Date();
 						let diff = date.getTime() - today.getTime();
@@ -618,68 +615,7 @@ module.exports = msgHandler = async (client, message) => {
 					}
 				}
 				break;
-
-			case '!xagc':
-			case '!agro':
-				let sendAgro = await axios.get(`https://api.pancakeswap.info/api/v2/tokens/0xd80bea63a208770e1c371dfbf70cb13469d29ae6`);
-				let dadosEncontradosAgro = sendAgro;
-				let priceformatAgro = (dadosEncontradosAgro.data.data.price * 1).toFixed(9);
-
-				await client.reply(
-					from,
-					`Nome: ${dadosEncontradosAgro.data.data.name}\nToken: ${dadosEncontradosAgro.data.data.symbol}\nPreço: ${priceformatAgro}`,
-					id
-				);
-
-				break;
-
-			case '!price':
-				/* if (args.length === 1) return client.reply(from, 'Digite !price .contrato (Ex: bscscan.com/token/>>>0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c<<<)', id)
-
-                let contrato = body.split('.')
-
-                let send = await axios.get(`https://api.pancakeswap.info/api/v2/tokens/${contrato[1]}`)
-                let dadosEncontrados = send;
-                let priceformat = (dadosEncontrados.data.data.price * 1).toFixed(9);
-
-                await client.reply(from, `Nome: ${dadosEncontrados.data.data.name}\nToken: ${dadosEncontrados.data.data.symbol}\nPreço: ${priceformat}`, id) */
-
-				/* url: "https://api.lunarcrush.com/v2?data=assets&key=pow9wvn4xxte3do4az7vq&symbol=" + token */
-
-				try {
-					if (args.lenght < 10) {
-						if (args.length === 1)
-							return client.reply(from, 'Digite !price .contrato (Ex: bscscan.com/token/>>>0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c<<<)', id);
-						let contrato = body.split('.');
-						let send = await axios.get(`https://api.pancakeswap.info/api/v2/tokens/${contrato[1]}`);
-						let dadosEncontrados = send;
-						let priceformat = (dadosEncontrados.data.data.price * 1).toFixed(9);
-
-						await client.reply(
-							from,
-							`Nome: ${dadosEncontrados.data.data.name}\nToken: ${dadosEncontrados.data.data.symbol}\nPreço: ${priceformat}`,
-							id
-						);
-					} else {
-						if (args.length === 1) return client.reply(from, 'Digite !price .ETH', id);
-						let parametroLunar = body.split('.');
-						let moedaLunar = parametroLunar[1];
-						let sendLunar = await axios.get(`https://api.lunarcrush.com/v2?data=assets&key=pow9wvn4xxte3do4az7vq&symbol=${moedaLunar}`);
-						let dadosEncontradosLunar = sendLunar;
-
-						await client.reply(
-							from,
-							`Nome: ${dadosEncontradosLunar['data']['data'][0]['name']}\nPreço: ${dadosEncontradosLunar['data']['data'][0]['price']}\nMarketCap: ${dadosEncontradosLunar['data']['data'][0]['market_cap']}\nVolume 24h: ${dadosEncontradosLunar['data']['data'][0]['volume_24h']}\nMax Supply: ${dadosEncontradosLunar['data']['data'][0]['max_supply']}\n`,
-							id
-						);
-					}
-				} catch (error) {
-					console.error(error);
-					await client.reply(from, `Moeda não encontrada!`, id);
-				}
-
-				break;
-
+				
 			case '!moeda':
 			case '!converter':
 			case '!cot':
@@ -734,7 +670,7 @@ module.exports = msgHandler = async (client, message) => {
 				break;
 		}
 	} catch (err) {
-		await client.sendText(`Puts, deu merda... chama o @5531995360492 e mostra essa merda aqui.... ${err}`);
+		await client.sendText(`Puts, deu merda... Erro: ${err}`);
 
 		console.log(color('[ERROR]', 'red'), err);
 		client.kill().then((a) => console.log(a));
