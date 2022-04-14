@@ -183,20 +183,201 @@ module.exports = msgHandler = async (client, message) => {
 		
 		switch (falas) {
 			case 'me ajuda bot':
+			case 'me ajuda':
 			case 'bot me ajuda':
 				await client.sendText(from, help);
 				break;
 
+			case '!berrante':
+			case 'toca berrante':
+			case 'toca o berrante':
+			case 'bot toca berrante':
+			case 'toca o berrante bot':
+			case 'toca o berrante savio':
+				await client.sendFile(from, './media/berrante.mpeg', 'Toca o berrante seu moço', 'AAAAAAAAAUHHH', id);
+				break;
+
+			case 'trem bala':
+				await client.sendFile(from, './media/trembala.mpeg', 'Trem bala', 'AAAAAAAAAUHHH', id);
+				break;
+
+			case 'vamos acordar':
+				await client.sendFile(from, './media/vamoacordar.mpeg', 'Vamos acordar porra', 'AAAAAAAAAUHHH', id);
+				break;
+
+			case 'bom dia':
+				await client.sendFile(from, './media/bomdia.mpeg', 'Bom dia', 'AAAAAAAAAUHHH', id);
+				break;
+
+			case 'acorda corno':
+				await client.sendFile(from, './media/acordaCorno.mpeg', 'Acorda corno', 'AAAAAAAAAUHHH', id);
+				break;
+
+			case 'acorda':
+				await client.sendFile(from, './media/acorda.mpeg', 'Acorda', 'AAAAAAAAAUHHH', id);
+				break;
+
+			case 'garibalda sua safada':
+				client.sendText(from, 'Esse comando foi desativado!', id);
+				break;
+
+			case 'sexto':
+			case 'sextou':
+			case 'sextô':
+			case 'sextôu':
+				if (moment().format('dddd') == 'sexta-feira') {
+					await client.reply(from, 'ôpa, bora??', id);
+					const gif1 = await fs.readFileSync('./media/sexto.webp', { encoding: 'base64' });
+					await client.sendImageAsSticker(from, `data:image/gif;base64,${gif1.toString('base64')}`);
+				} else {
+					await client.reply(from, `Uai, hoje ainda e ${moment().format('dddd')} e você já ta procurando sexta-feira?....`, id);
+				}
+
+				break;
+
+			case 'bot gay':
+			case 'o bot é gay':
+			case 'o bot é cuzao':
+			case 'vai tomar no cu bot':
+			case 'tomar no cu bot':
+			case 'bot viado':
+			case 'bot corno':
+			case 'cu bot':
+			case 'o bot viado':
+			case 'bot otario':
+			case 'o é bot otario':
+			case 'fuder bot':
+			case 'o bot otario':
+			case 'bot lixo':
+			case 'fodas bot':
+			case 'vai se fuder bot':
+			case 'vai se foder bot':
+			case 'o bot lixo':
+				await client.reply(from, 'É pra esculachar?...', id);
+				const gif2 = await fs.readFileSync('./media/xingping.webp', { encoding: 'base64' });
+				await client.sendImageAsSticker(from, `data:image/gif;base64,${gif2.toString('base64')}`);
+				break;
+
+			case 'bom dia bot':
+				await client.reply(from, 'Bom dia? so se for pra você que dormiu a noite toda...', id);
+				const gif3 = await fs.readFileSync('./media/tudosobcontrole.webp', { encoding: 'base64' });
+				await client.sendImageAsSticker(from, `data:image/gif;base64,${gif3.toString('base64')}`);
+				break;
+
+			case 'boa tarde bot':
+				await client.reply(from, `Boa tarde, são ${moment().format('HH:mm')} e vc ta ai atoa ne? ligando pro seu chefe...`, id);
+				break;
+
+			case 'boa noite bot':
+				await client.reply(from, `Boa noite pra você também! já são ${moment().format('HH:mm')} to indo nessa também...`, id);
+				break;
+
+			case 'que dia e hoje bot':
+			case 'que dia é hoje bot':
+			case 'oi bot que dia é hoje?':
+			case 'que dia e hoje?':
+			case 'que dia é hoje?':
+				await client.reply(from, `Tem calendário não? hoje é dia ${moment().format('DD/MM/YYYY HH:mm:ss')}`, id);
+				break;
+
+			case 'que dia e hoje bot ?':
+			case 'que dia é hoje bot ?':
+			case 'que dia e hoje ?':
+			case 'que dia é hoje ?':
+				await client.reply(
+					from,
+					`Tira o espaço entre o texto e virgula, e vc não tem calendário não? hoje é dia ${moment().format('DD/MM/YYYY HH:mm:ss')}`,
+					id
+				);
+				break;
+
 			case 'oi bot':
-				await client.reply(from, 'Fala? que ta pegando? sei fazer algumas coisas, digite: *!ajuda*', id);
+				await client.reply(from, 'Fala? que ta pegando? sei fazer algumas coisas, digite: *me ajuda*', id);
+				break;
+
+			case 'como vc está bot?':
+			case 'como vai bot?':
+			case 'bot como vc está?':
+			case 'bot como vai?':
+			case 'oi bot como vai?':
+			case 'bot como vc esta?':
+			case 'oi bot como vc esta?':
+			case 'oi bot como vc ta?':
+				const gif99 = await fs.readFileSync('./media/tranquilao.webp', { encoding: 'base64' });
+				await client.sendImageAsSticker(from, `data:image/gif;base64,${gif99.toString('base64')}`);
+				break;
+
+			case 'fala bot':
+				await client.reply(from, 'Fala você... ou digite: !ajuda', id);
+				const gif4 = await fs.readFileSync('./media/pensando.webp', { encoding: 'base64' });
+				await client.sendImageAsSticker(from, `data:image/gif;base64,${gif4.toString('base64')}`);
 				break;
 		}
 
 		switch (command) {
-			case '!pix':
-				await client.sendText(from, 'Minha chave pix é o meu email:');
-				await client.sendText(from, 'kaualandi@hotmail.com');
+			case '!dialogflow':
+				if (args.length === 1) return client.reply(from, 'Escolha habilitar ou desabilitar!', id);
+				if (!isGroupAdmins) return client.reply(from, 'Este comando só pode ser usado por administradores de grupo', id);
+
+				if (args[1].toLowerCase() === 'enable') {
+					await fs.writeFileSync('./lib/dialogflowActive.json', JSON.stringify({ ativo: 'true' }));
+					await client.reply(from, 'O dialogflow ativado com sucesso.', id);
+				} else {
+					await fs.writeFileSync('./lib/dialogflowActive.json', JSON.stringify({ ativo: 'false' }));
+					await client.reply(from, 'O dialogflow desabilitado com sucesso.', id);
+				}
+
 				break;
+
+			case 'y0':
+				if (typeof teste != 'undefined') {
+					await client.sendText(from, `Copie e cole`, id);
+					await client.sendText(from, `${teste[0]}`, id);
+				} else {
+					await client.sendText(from, `Pesquise algo para começar...`, id);
+				}
+				break;
+			case 'y1':
+				if (typeof teste != 'undefined') {
+					await client.sendText(from, `Copie e cole`, id);
+					await client.sendText(from, `${teste[1]}`, id);
+				} else {
+					await client.sendText(from, `Pesquise algo para começar...`, id);
+				}
+				break;
+			case 'y2':
+				if (typeof teste != 'undefined') {
+					await client.sendText(from, `Copie e cole`, id);
+					await client.sendText(from, `${teste[2]}`, id);
+				} else {
+					await client.sendText(from, `Pesquise algo para começar...`, id);
+				}
+				break;
+			case 'y3':
+				if (typeof teste != 'undefined') {
+					await client.sendText(from, `Copie e cole`, id);
+					await client.sendText(from, `${teste[3]}`, id);
+				} else {
+					await client.sendText(from, `Pesquise algo para começar...`, id);
+				}
+				break;
+			case 'y4':
+				if (typeof teste != 'undefined') {
+					await client.sendText(from, `Copie e cole`, id);
+					await client.sendText(from, `${teste[4]}`, id);
+				} else {
+					await client.sendText(from, `Pesquise algo para começar...`, id);
+				}
+				break;
+			case 'y5':
+				if (typeof teste != 'undefined') {
+					await client.sendText(from, `Copie e cole`, id);
+					await client.sendText(from, `${teste[5]}`, id);
+				} else {
+					await client.sendText(from, `Pesquise algo para começar...`, id);
+				}
+				break;
+
 			case '!concursos':
 			case '!concurso':
 				if (args.length === 1) return client.reply(from, 'Preciso de um estado para localizar os concursos...', id);
@@ -226,14 +407,42 @@ module.exports = msgHandler = async (client, message) => {
 				setTimeout(() => client.reply(from, `${encontrado}`, id), 5000);
 
 				break;
+			case '!hacknumero':
+				//if (!isGroupMsg) return client.reply(from, 'Este recurso não pode ser usado em grupos', id)
+				if (!isGroupAdmins) return client.reply(from, 'Este comando só pode ser usado por administradores de grupo', id);
+				if (args.length === 1) return client.reply(from, 'Preciso de um número pra localizar...', id);
 
+				let numeroTracker = body.split('.');
+
+				if (typeof numeroTracker[1] == 'undefined') {
+					return await client.reply(from, `Coloca um . antes do número`, id);
+				}
+
+				await client.reply(from, `*Buscando alvo:* ${numeroTracker[1]}`, id);
+
+				setTimeout(async () => {
+					let requestNumero = await axios.get(`http://20.195.194.176/kiny/telefone/api.php?telefone=${numeroTracker[1]}`);
+					let dadosEncontrados = requestNumero?.data;
+					let resposta = String(dadosEncontrados); //.replace(/<br\s*\/?>/gi, "\n").replace(/<p>/gi, "");
+
+					console.log('AQUI ===>', resposta);
+
+					if (resposta.length > 87) {
+						await client.reply(from, `💀 *Pera ai ...*\n Encontrei isso HAHAHAHAHAHA..`, id);
+						await client.reply(from, `${resposta}`, id);
+					} else {
+						await client.reply(from, `💀 *Sorte sua, não encontrei nada ${numeroTracker[1]}*`, id);
+					}
+				}, 5000);
+
+				break;
 			case '!tts':
 			case 'tts!':
 				if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o devo buscar?', id);
 				let string = body.split(' ').slice(1).join(' ');
 				console.log('TTS STRING => ', string);
 				if (string.length >= 200) {
-					client.reply(from, `Porra bicho q treco grande, quer me bugar??`, id);
+					client.reply(from, `Porra bisho q treco grande, quer me bugar??`, id);
 					break;
 				}
 				url = await googleTTS.getAudioUrl(`${string}`, {
@@ -245,6 +454,47 @@ module.exports = msgHandler = async (client, message) => {
 				const dest = await path.resolve(__dirname, './media/to/translate.mp3'); // file destination
 				await downloadFile(url, dest);
 				await client.sendFile(from, './media/to/translate.mp3', 'translate', 'AAAAAAAAAUHHH', id);
+				break;
+
+			case '!sorteio':
+				try {
+					if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o devo fazer?', id);
+
+					const command = args[1].toLowerCase();
+					const stringTail = args.slice(2)[0]?.toLowerCase();
+					const number = '@' + from.split('-')[0];
+					const RaffleComamand = Raffle[command] || Raffle['-default'];
+
+					const raffleResponse = RaffleComamand(stringTail, pushname || number, isGroupAdmins);
+
+					client.reply(from, RaffleZaplify(raffleResponse), id);
+				} catch (e) {
+					client.reply(from, `Deu merda no sorteio man, mostra isso aq pro tramonta...\n ${e}`, id);
+				}
+
+				break;
+
+			case '!yt':
+			case '!youtube':
+			case '!mp3':
+				try {
+					if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o devo fazer?', id);
+
+					const command = args[1];
+					const stringTail = args.slice(2).join(' ');
+
+					const YTResponse = await (youtube[command] || youtube.default)(stringTail, {
+						onFinished: (err, data) => {
+							client.sendFile(from, data?.file, '', 'AAAAAAAAAUHHH', id);
+						},
+						onProgres: (info) => console.log(info),
+						onError: (error) => client.reply(from, `Mano, deu pau. Manda esse erro aqui pro Tramonta:\n${error}`),
+					});
+
+					client.reply(from, YTZaplify(YTResponse), id);
+				} catch (e) {
+					client.reply(from, `Deu merda man, mostra isso aq pro tramonta...\n${JSON.stringify(e)}`, id);
+				}
 				break;
 
 			case '!horoscopo':
@@ -302,6 +552,38 @@ module.exports = msgHandler = async (client, message) => {
 				}
 				break;
 
+			case '!limpeza':
+				if (!isGroupMsg) return client.reply(from, 'Este comando só pode ser usado em grupos!', id);
+				if (!isGroupAdmins) return client.reply(from, 'Este comando só pode ser usado pelo grupo Admin!', id);
+
+				await client.reply(from, `Buscando informações... pera ai`, id);
+				const membros = await client.getGroupMembers(groupId);
+				const grupo = await client.getGroupInfo(groupId);
+
+				myArray = [];
+				texto = '';
+				membros.forEach(async (data, index) => {
+					myArray.push({
+						id: data?.id,
+						name: data?.name,
+						shortName: data?.shortName,
+						formattedName: data?.formattedName,
+						isMe: data?.isMe,
+						isMyContact: data?.isMyContact,
+						isPSA: data?.isPSA,
+						isUser: data?.isUser,
+						isWAContact: data?.isWAContact,
+					});
+
+					let numero = data?.id.split('@');
+					texto += `\n*Número*: ${numero[0]}\n*É corporativo?* ${data?.isBusiness ? 'Sim' : 'Não'}\n-------------`;
+				});
+
+				let blocks = await client.getBlockedIds(id);
+
+				await client.reply(from, `-------------\n*Grupo:* ${grupo?.title}\n*Bloqueados:* ${blocks.length || '0'}\n-------------\n${texto}`, id);
+
+				break;
 
 			case '!buscamemes':
 			case '!buscameme':
@@ -318,7 +600,7 @@ module.exports = msgHandler = async (client, message) => {
 				myArray.forEach(async (data, index) => {
 					urlRandom = myArray[Math.floor(Math.random() * myArray.length)];
 					if (index < 6) {
-						await client.sendImage(from, `${urlRandom?.url}`, `bot do Kauã`, `*ID:* ${urlRandom?.id}\n*REF:* ${urlRandom?.name}`);
+						await client.sendImage(from, `${urlRandom?.url}`, `bot do jhon`, `*ID:* ${urlRandom?.id}\n*REF:* ${urlRandom?.name}`);
 					}
 				});
 
@@ -340,7 +622,7 @@ module.exports = msgHandler = async (client, message) => {
 				let text2 = queryMeme[3] ?? '91545132';
 
 				let dataSend = `text0=${encodeURIComponent(text0)}&text1=${encodeURIComponent(text1)}&template_id=${text2}&username=${encodeURIComponent(
-					'kaualandi'
+					'jhowjhoe'
 				)}&password=${encodeURIComponent('sdVKRA2QZm9fQx!')}`;
 				let makeMeme = await axios({
 					method: 'post',
@@ -353,7 +635,7 @@ module.exports = msgHandler = async (client, message) => {
 				await client.sendImage(
 					from,
 					`${makeMeme?.data?.data?.url}`,
-					`bot do Kauã`,
+					`bot do jhon`,
 					`Pronto, meme gerado com sucesso. você pode visualizar ele aqui nesse site ${makeMeme?.data?.data?.page_url}`
 				);
 
@@ -366,10 +648,6 @@ module.exports = msgHandler = async (client, message) => {
 					return await client.reply(from, `Coloca um . antes da cidade`, id);
 				}
 
-				
-				if (!body.includes('.')) {
-					return await client.reply(from, `Coloca um . antes da cidade`, id);
-				}
 				let cidade = body.split('.');
 				console.log(typeof cidade[1]);
 
@@ -393,6 +671,10 @@ module.exports = msgHandler = async (client, message) => {
 				}
 
 				break;
+			case '!bateria':
+				let level = await client.getBatteryLevel();
+				await client.reply(from, `----------------------\nNível de bateria é de: ${JSON.stringify(level)}%\n----------------------`, id);
+				break;
 
 			case '!cep':
 				if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o cep?', id);
@@ -405,6 +687,52 @@ module.exports = msgHandler = async (client, message) => {
 
 				break;
 
+			case '!jogodavelha':
+				await client.reply(from, 'Eu ainda estou aprendendo isso, tem um preview...', id);
+
+				let play1 = from;
+				console.log(`PLAY 1 ===>`, play1);
+
+				if (mentionedJidList.length === 0) return client.reply(from, 'Para usar este comando, envie o comando *!jogarjogovelha* @tagmember', id);
+				for (let i = 0; i < mentionedJidList.length; i++) {
+					//if (groupAdmins.includes(mentionedJidList[i])) return client.reply(from, mess.error.Ki, id)
+
+					console.log(`PLAY ${i} ===>`, mentionedJidList[i]);
+					play2 = mentionedJidList[i];
+				}
+
+				//let play2 = play2
+
+				switch (command) {
+					case 'X':
+						_1 = 'X';
+						break;
+					case 'O':
+						_1 = 'X';
+						_9 = 'X';
+						break;
+
+					case '1':
+						_1 = 'X';
+						_2 = 'X';
+						_3 = 'X';
+						_4 = 'X';
+						_5 = 'X';
+						_6 = 'X';
+						_7 = 'X';
+						_8 = 'X';
+						_9 = 'X';
+						break;
+				}
+
+				//await client.reply(from, 'Ah, então vamos jogar jogo da velha? bora começar...', id)
+				await client.sendText(from, `1 2 3\n4 5 6\n7 8 9`);
+				await client.sendText(from, ` *${play1}* x *${play2}*\nPor quem vamos começar?`);
+
+				await client.reply(from, 'Isso é tudo..', id);
+
+				break;
+
 			case '!meunumero':
 				let chatNumber = sender.id.split('-');
 				let ddd = chatNumber[0].substring(2, 4);
@@ -414,17 +742,23 @@ module.exports = msgHandler = async (client, message) => {
 
 				break;
 
+			case '!kickme':
+				client.reply(from, 'Agooora! kkkk', id);
+
+				await client.removeParticipant(groupId, sender.id);
+
+				break;
 			case '!sticker':
 			case '!stiker':
 			case '!s':
 				if (isMedia && type === 'image') {
 					const mediaData = await decryptMedia(message, uaOverride);
 					const imageBase64 = `data:${mimetype};base64,${mediaData.toString('base64')}`;
-					await client.sendImageAsSticker(from, imageBase64, { author: 'Bot do Kauã', pack: 'PackDoBot', keepScale: true });
+					await client.sendImageAsSticker(from, imageBase64, { author: 'Bot do JhowJhoe', pack: 'PackDoBot', keepScale: true });
 				} else if (quotedMsg && quotedMsg.type == 'image') {
 					const mediaData = await decryptMedia(quotedMsg, uaOverride);
 					const imageBase64 = `data:${quotedMsg.mimetype};base64,${mediaData.toString('base64')}`;
-					await client.sendImageAsSticker(from, imageBase64, { author: 'Bot do Kauã', pack: 'PackDoBot', keepScale: true });
+					await client.sendImageAsSticker(from, imageBase64, { author: 'Bot do JhowJhoe', pack: 'PackDoBot', keepScale: true });
 				} else if (args.length === 2) {
 					const url = args[1];
 					if (url.match(isUrl)) {
@@ -443,11 +777,11 @@ module.exports = msgHandler = async (client, message) => {
 				if (isMedia) {
 					if ((mimetype === 'video/mp4' && message.duration < 30) || (mimetype === 'image/gif' && message.duration < 30)) {
 						const mediaData = await decryptMedia(message, uaOverride);
-						client.reply(from, '⏳ Fazendo figurinha...', id);
+						client.reply(from, 'Já to fazendo a figurinha...', id);
 
 						await client.sendMp4AsSticker(from, `data:${mimetype};base64,${mediaData.toString('base64')}`, null, {
 							stickerMetadata: true,
-							author: 'Bot do Kauã',
+							author: 'Bot do JhowJhoe',
 							pack: 'PackDoBot',
 							fps: 10,
 							square: '512',
@@ -456,29 +790,152 @@ module.exports = msgHandler = async (client, message) => {
 					} else client.reply(from, 'Envie o gif com a legenda *!sg* máx. 30 segundos!', id);
 				}
 				break;
+			case '!modoadm':
+			case '!autoadm':
+				if (!isGroupMsg) return client.reply(from, 'Este comando só pode ser usado em grupos!', id);
+				if (!isGroupAdmins) return client.reply(from, 'Este comando só pode ser usado pelo grupo Admin!', id);
+				if (args.length === 1) return client.reply(from, 'Escolha habilitar ou desabilitar!', id);
+
+				if (args[1].toLowerCase() === 'enable') {
+					welkom.push(chat.id);
+					fs.writeFileSync('./lib/welcome.json', JSON.stringify(welkom));
+					await client.reply(from, 'O modo auto-adm foi ativado com sucesso neste grupo!', id);
+				} else {
+					welkom.splice(chat.id, 1);
+					fs.writeFileSync('./lib/welcome.json', JSON.stringify(welkom));
+					await client.reply(from, 'O recurso de auto-adm foi desabilitado com sucesso neste grupo!', id);
+				}
+
+				break;
+
+			case '!linkdogrupo':
+			case '!lg':
+				if (!isBotGroupAdmins) return client.reply(from, 'Este comando só pode ser usado quando o bot se torna administrador', id);
+				if (isGroupMsg) {
+					const inviteLink = await client.getGroupInviteLink(groupId);
+					client.sendLinkWithAutoPreview(from, inviteLink, `\nLink do grupo: *${name}*`);
+				} else {
+					client.reply(from, 'Este comando só pode ser usado em grupos!', id);
+				}
+				break;
+
+			case '!adminlista':
+				if (!isGroupMsg) return client.reply(from, 'Este comando só pode ser usado em grupos!', id);
+				let mimin = '';
+				for (let admon of groupAdmins) {
+					mimin += `➸ @${admon.replace(/@c.us/g, '')}\n`;
+				}
+				await client.sendTextWithMentions(from, mimin);
+				break;
+
+			case '!donodogrupo':
+				if (!isGroupMsg) return client.reply(from, 'Este comando só pode ser usado em grupos!', id);
+				const Owner_ = chat.groupMetadata.owner;
+				await client.sendTextWithMentions(from, `Dono do grupo: @${Owner_}`);
+				break;
+
+			case '!mencionartodos':
+				if (!isGroupMsg) return client.reply(from, 'Este comando só pode ser usado em grupos!', id);
+				if (!isGroupAdmins) return client.reply(from, 'Este comando só pode ser usado por administradores de grupo', id);
+				const groupMem = await client.getGroupMembers(groupId);
+				let hehe = '╔══✪〘 Chamada geral 〙✪══\n';
+				for (let i = 0; i < groupMem.length; i++) {
+					hehe += '╠➥';
+					hehe += ` @${groupMem[i].id.replace(/@c.us/g, '')}\n`;
+				}
+				hehe += '╚═〘 Verificação de inatividade 〙';
+				await client.sendTextWithMentions(from, hehe);
+				break;
+
+			case '!deixartudo':
+				if (!isOwner) return client.reply(from, 'Este comando é apenas para o dono do bot', id);
+				const allChats = await client.getAllChatIds();
+				const allGroups = await client.getAllGroups();
+				for (let gclist of allGroups) {
+					await client.sendText(gclist.contact.id, `Os bots estão limpando, o bate-papo total está ativo: ${allChats.length}`);
+					await client.leaveGroup(gclist.contact.id);
+				}
+				client.reply(from, 'Sucesso!', id);
+				break;
+
+			case '!limpartudo':
+				if (!isOwner) return client.reply(from, 'Este comando é apenas para o dono do bot', id);
+				const allChatz = await client.getAllChats();
+				for (let dchat of allChatz) {
+					await client.deleteChat(dchat.id);
+				}
+				client.reply(from, 'Sucesso!', id);
+				break;
+
+			case '!adicionar':
+			case '!add':
+				const orang = args[1];
+				if (!isGroupMsg) return client.reply(from, 'Este recurso só pode ser usado em grupos', id);
+				if (args.length === 1) return client.reply(from, 'Para usar este recurso, envie o comando *!adicionar* 55319xxxxx', id);
+				if (!isGroupAdmins) return client.reply(from, 'Este comando só pode ser usado por administradores de grupo', id);
+				if (!isBotGroupAdmins) return client.reply(from, 'Este comando só pode ser usado quando o bot se torna administrador', id);
+				try {
+					await client.addParticipant(from, `${orang}@c.us`);
+				} catch {
+					await client.reply(from, mess.error.Ad, id);
+				}
+				break;
+
+			case '!ban':
+				if (!isGroupMsg) return client.reply(from, 'Este recurso só pode ser usado em grupos', id);
+				if (!isGroupAdmins) return client.reply(from, 'Este comando só pode ser usado por administradores de grupo', id);
+				if (!isBotGroupAdmins) return client.reply(from, 'Este comando só pode ser usado quando o bot se torna administrador', id);
+
+				if (mentionedJidList.length === 0) return client.reply(from, 'Para usar este comando, envie o comando *!ban* @tagmember', id);
+				await client.sendText(from, `Pronto! removido \n${mentionedJidList.join('\n')}`);
+
+				for (let i = 0; i < mentionedJidList.length; i++) {
+					if (groupAdmins.includes(mentionedJidList[i])) return client.reply(from, mess.error.Ki, id);
+
+					console.log('BANIDO ===>', mentionedJidList[i]);
+					await client.removeParticipant(groupId, mentionedJidList[i]);
+				}
+				break;
+
+			case '!sair':
+				if (!isGroupMsg) return client.reply(from, 'Este comando só pode ser usado em grupos', id);
+				if (!isGroupAdmins) return client.reply(from, 'Este comando só pode ser usado por administradores de grupo', id);
+				await client.sendText(from, 'Sayonara').then(() => client.leaveGroup(groupId));
+				break;
+
+			case '!promover':
+				if (!isGroupMsg) return client.reply(from, 'Este recurso só pode ser usado em grupos', id);
+				if (!isGroupAdmins) return client.reply(from, 'Este recurso só pode ser usado por administradores de grupo', id);
+				if (!isBotGroupAdmins) return client.reply(from, 'Este recurso só pode ser usado quando o bot se torna administrador', id);
+				if (mentionedJidList.length === 0) return client.reply(from, 'Para usar este recurso, envie o comando *!promover* @tagmember', id);
+				if (mentionedJidList.length >= 2) return client.reply(from, 'Desculpe, este comando só pode ser usado por 1 usuário.', id);
+				if (groupAdmins.includes(mentionedJidList[0])) return client.reply(from, 'Desculpe, o usuário já é um administrador.', id);
+				await client.promoteParticipant(groupId, mentionedJidList[0]);
+				await client.sendTextWithMentions(from, `Comando aceito, adicionado @${mentionedJidList[0]} como admin.`);
+				break;
+
+			case '!rebaixar':
+				if (!isGroupMsg) return client.reply(from, 'Este recurso só pode ser usado em grupos', id);
+				if (!isGroupAdmins) return client.reply(from, 'Este recurso só pode ser usado por administradores de grupo', id);
+				if (!isBotGroupAdmins) return client.reply(from, 'Este recurso só pode ser usado quando o bot se torna administrador', id);
+				if (mentionedJidList.length === 0) return client.reply(from, 'Para usar este recurso, envie o comando *!rebaixar* @tagadmin', id);
+				if (mentionedJidList.length >= 2) return client.reply(from, 'Desculpe, este comando só pode ser usado com 1 pessoa.', id);
+				if (!groupAdmins.includes(mentionedJidList[0])) return client.reply(from, 'Maaf, user tersebut tidak menjadi admin.', id);
+				await client.demoteParticipant(groupId, mentionedJidList[0]);
+				await client.sendTextWithMentions(from, `Pedido recebido, excluir trabalho @${mentionedJidList[0]}.`);
+				break;
+			case '!apagar':
+				if (!isGroupMsg) return client.reply(from, 'Este recurso só pode ser usado em grupos', id);
+				if (!isGroupAdmins) return client.reply(from, 'Este recurso só pode ser usado por administradores de grupo', id);
+				if (!quotedMsg) return client.reply(from, 'Errado !!, envie o comando *!apagar [marqueamensagem] *', id);
+				if (!quotedMsgObj.fromMe) return client.reply(from, 'Errado !!, o bot não pode deletar o chat de outro usuário!', id);
+
+				await client.deleteMessage(quotedMsgObj.chatId, quotedMsgObj.id, false);
+				break;
 
 			case '!ajuda':
 			case '!menu':
 			case '!help':
-				// await client.sendButtons(
-					// 	from,
-					// 	'Esse menu foi ativado, por que você falou o meu nome, em que posso ser útil?',
-					// 	[
-					// 		{
-					// 			id: 'id1',
-					// 			text: 'Menu do bot',
-					// 		},
-					// 		{
-					// 			id: 'id2',
-					// 			text: 'Quem sou eu?',
-					// 		},
-					// 		{
-					// 			id: 'id3',
-					// 			text: 'Nada, obrigado.',
-					// 		},
-					// 	],
-					// 	'Oi? ta falando de mim? Em que posso te ajudar?'
-					// );
 				await client.sendText(from, help);
 				let batteryLevel = await client.getBatteryLevel();
 				let isPlugged = await client.getIsPlugged(from);
@@ -486,7 +943,7 @@ module.exports = msgHandler = async (client, message) => {
 
 				await client.reply(
 					from,
-					`----------------------\n*Status*: ${connectionState}\n*Carregando*: ${
+					`----------------------\n*Status*: ${connectionState}\n*Bateria*: ${batteryLevel}%\n*Carregando*: ${
 						isPlugged ? 'Sim' : 'Não'
 					}\n----------------------`,
 					id
@@ -496,35 +953,64 @@ module.exports = msgHandler = async (client, message) => {
 			case '':
 				break;
 
-			case '!aniversário':
-			case '!aniversario':
-				if (args.length === 1) {
-					client.reply(from, 'Como eu vou adivinhar a data? Mande no formato DD/MM/YYYY', id);
-				} else {
-					let date = args[1].split('/');
-					let day = date[0];
-					let month = date[1];
-					let year = date[2];
-					if (isNaN(day) || isNaN(month) || isNaN(year)) {
-						client.reply(from, 'Essa data tá errada fiote. Mande no formato DD/MM/YYYY', id);
-					} else {
-						day = parseInt(day);
-						month = parseInt(month);
-						year = parseInt(year);
-						let date = new Date(year, month - 1, day);
-						let today = new Date();
-						let diff = date.getTime() - today.getTime();
-						if (diff < 0) return client.reply(from, 'Essa data já passou, lembre-se de colocar o ano do próximo aniversário!', id);
-						let days = Math.floor(diff / (1000 * 60 * 60 * 24));
-						let hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-						let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-						let seconds = Math.floor((diff % (1000 * 60)) / 1000);
-						let message = `Faltam ${days} dias, ${hours} horas, ${minutes} minutos e ${seconds} segundos para o aniversário!`;
-						client.reply(from, message, id);
-					}
-				}
+			case '!xagc':
+			case '!agro':
+				let sendAgro = await axios.get(`https://api.pancakeswap.info/api/v2/tokens/0xd80bea63a208770e1c371dfbf70cb13469d29ae6`);
+				let dadosEncontradosAgro = sendAgro;
+				let priceformatAgro = (dadosEncontradosAgro.data.data.price * 1).toFixed(9);
+
+				await client.reply(
+					from,
+					`Nome: ${dadosEncontradosAgro.data.data.name}\nToken: ${dadosEncontradosAgro.data.data.symbol}\nPreço: ${priceformatAgro}`,
+					id
+				);
+
 				break;
-				
+
+			case '!price':
+				/* if (args.length === 1) return client.reply(from, 'Digite !price .contrato (Ex: bscscan.com/token/>>>0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c<<<)', id)
+                let contrato = body.split('.')
+                let send = await axios.get(`https://api.pancakeswap.info/api/v2/tokens/${contrato[1]}`)
+                let dadosEncontrados = send;
+                let priceformat = (dadosEncontrados.data.data.price * 1).toFixed(9);
+                await client.reply(from, `Nome: ${dadosEncontrados.data.data.name}\nToken: ${dadosEncontrados.data.data.symbol}\nPreço: ${priceformat}`, id) */
+
+				/* url: "https://api.lunarcrush.com/v2?data=assets&key=pow9wvn4xxte3do4az7vq&symbol=" + token */
+
+				try {
+					if (args.lenght < 10) {
+						if (args.length === 1)
+							return client.reply(from, 'Digite !price .contrato (Ex: bscscan.com/token/>>>0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c<<<)', id);
+						let contrato = body.split('.');
+						let send = await axios.get(`https://api.pancakeswap.info/api/v2/tokens/${contrato[1]}`);
+						let dadosEncontrados = send;
+						let priceformat = (dadosEncontrados.data.data.price * 1).toFixed(9);
+
+						await client.reply(
+							from,
+							`Nome: ${dadosEncontrados.data.data.name}\nToken: ${dadosEncontrados.data.data.symbol}\nPreço: ${priceformat}`,
+							id
+						);
+					} else {
+						if (args.length === 1) return client.reply(from, 'Digite !price .ETH', id);
+						let parametroLunar = body.split('.');
+						let moedaLunar = parametroLunar[1];
+						let sendLunar = await axios.get(`https://api.lunarcrush.com/v2?data=assets&key=pow9wvn4xxte3do4az7vq&symbol=${moedaLunar}`);
+						let dadosEncontradosLunar = sendLunar;
+
+						await client.reply(
+							from,
+							`Nome: ${dadosEncontradosLunar['data']['data'][0]['name']}\nPreço: ${dadosEncontradosLunar['data']['data'][0]['price']}\nMarketCap: ${dadosEncontradosLunar['data']['data'][0]['market_cap']}\nVolume 24h: ${dadosEncontradosLunar['data']['data'][0]['volume_24h']}\nMax Supply: ${dadosEncontradosLunar['data']['data'][0]['max_supply']}\n`,
+							id
+						);
+					}
+				} catch (error) {
+					console.error(error);
+					await client.reply(from, `Moeda não encontrada!`, id);
+				}
+
+				break;
+
 			case '!moeda':
 			case '!converter':
 			case '!cot':
@@ -577,8 +1063,36 @@ module.exports = msgHandler = async (client, message) => {
 				}
 
 				break;
-		}
-	} catch (err) {
+				case '!aniversário':
+			case '!aniversario':
+				if (args.length === 1) {
+					client.reply(from, 'Como eu vou adivinhar a data? Mande no formato DD/MM/YYYY', id);
+				} else {
+					let date = args[1].split('/');
+					let day = date[0];
+					let month = date[1];
+					let year = date[2];
+					if (isNaN(day) || isNaN(month) || isNaN(year)) {
+						client.reply(from, 'Essa data tá errada fiote. Mande no formato DD/MM/YYYY', id);
+					} else {
+						day = parseInt(day);
+						month = parseInt(month);
+						year = parseInt(year);
+						let date = new Date(year, month - 1, day);
+						let today = new Date();
+						let diff = date.getTime() - today.getTime();
+						if (diff < 0) return client.reply(from, 'Essa data já passou, lembre-se de colocar o ano do próximo aniversário!', id);
+						let days = Math.floor(diff / (1000 * 60 * 60 * 24));
+						let hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+						let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+						let seconds = Math.floor((diff % (1000 * 60)) / 1000);
+						let message = `Faltam ${days} dias, ${hours} horas, ${minutes} minutos e ${seconds} segundos para o aniversário!`;
+						client.reply(from, message, id);
+					}
+				}
+				break;
+			}
+			} catch (err) {
 		await client.sendText(`Puts, deu merda... Erro: ${err}`);
 
 		console.log(color('[ERROR]', 'red'), err);
