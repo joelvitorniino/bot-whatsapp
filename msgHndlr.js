@@ -10,12 +10,6 @@ const http = require('http');
 const https = require('https');
 const urlParse = require('url').parse;
 
-const youtube = require('./youtube/youtubeCommandsHandler');
-const YTZaplify = require('./youtube/YTZaplify');
-
-const Raffle = require('./Raffle/RaffleCommandHandler');
-const RaffleZaplify = require('./Raffle/RaffleZaplify');
-
 const googleTTS = require('google-tts-api'); // CommonJS
 
 const dialogflow = require('dialogflow');
@@ -32,6 +26,14 @@ const sessionClient = new dialogflow.SessionsClient({
 	projectId: config.GOOGLE_PROJECT_ID,
 	credentials,
 });
+
+const bannedUsers = [
+	'5521976607557@c.us', // Albarran
+];
+const silenceBannedUsers = [
+	// '555591441492-1588522560@g.us', // Code Monkey
+	// '553195360492-1623288522@g.us' // Grupo dos bots
+]
 
 /**
  * Send a query to the dialogflow agent, and return the query result.
@@ -98,11 +100,12 @@ module.exports = msgHandler = async (client, message) => {
 		const falas = commands.toLowerCase();
 		const command = commands.toLowerCase().split(' ')[0] || '';
 		const args = commands.split(' ');
-		
-		if(isGroupMsg) {
+
+		if (silenceBannedUsers.includes(chat.id)) {
 			return;
 		}
-
+		
+		console.log('----------------------------------------');
 		const msgs = (message) => {
 			if (command.startsWith('!')) {
 				if (message.length >= 10) {
@@ -149,16 +152,22 @@ module.exports = msgHandler = async (client, message) => {
 		//if (!isGroupMsg && !command.startsWith('!')) console.log('\x1b[1;33m~\x1b[1;37m>', '[\x1b[1;31mMSG\x1b[1;37m]', time, color(body), 'from', color(pushname))
 		
 		if (isGroupMsg && !command.startsWith('!'))
-			console.log('\x1b[1;33m~\x1b[1;37m>', '[\x1b[1;31mMSG\x1b[1;37m]', time, color(body), 'from', color(pushname), 'in', color(formattedTitle));
+				console.log('\x1b[1;33m~\x1b[1;37m>', '[\x1b[1;31mMSG\x1b[1;37m]', time, color(body), 'from', color(pushname), 'in', color(formattedTitle));
 		if (isBlocked) return;
 		//if (!isOwner) return
 
-
-		console.log('FROM ===>', color(pushname));
-		console.log('ARGUMENTOS ===>', color(args));
-		console.log('FALAS ====>', color(falas));
-		console.log('COMANDO ====>', color(command));
-
+		
+		console.log('FROM 		===>', color(pushname));
+		console.log('FROM_ID 	===>', chat.id);
+		console.log('ARGUMENTOS	===>', color(args));
+		console.log('FALAS 		===>', color(falas));
+		console.log('COMANDO 	===>', color(command));
+		
+		if (command.startsWith('!') && bannedUsers.includes(chat.id)) {
+			await client.sendText(from, '*_Você foi banido, não pode usar o bot. :(_*', id);
+			console.log("USUÁRIO BANIDO!");
+			return;
+		}
 		let objeto = JSON.parse(await fs.readFileSync('./lib/dialogflowActive.json', { encoding: 'utf8', flag: 'r' }));
 
 		if (objeto?.ativo == 'true') {
@@ -171,175 +180,23 @@ module.exports = msgHandler = async (client, message) => {
 				await client.reply(from, `${response?.text?.text[randomIndex]}`, id);
 			}
 		}
-
-		if (falas.indexOf('oi ') != -1 ||
-		falas.indexOf('fala ai') != -1 ||
-		falas.indexOf('fala ae') != -1 ||
-		falas.indexOf('salve ') != -1 ||
-		falas.indexOf('olá') != -1 ||
-		falas.indexOf('oi bruce') != -1 ||
-		falas.indexOf('olá bruce') != -1 ||
-		falas.indexOf('oi kauã') != -1 ||
-		falas.indexOf('olá kauã') != -1 ||
-		falas.indexOf('oi kaua') != -1 ||
-		falas.indexOf('olá kaua') != -1) {
-			// await client.sendButtons(
-			// 	from,
-			// 	'Esse menu foi ativado, por que você falou o meu nome, em que posso ser útil?',
-			// 	[
-			// 		{
-			// 			id: 'id1',
-			// 			text: 'Menu do bot',
-			// 		},
-			// 		{
-			// 			id: 'id2',
-			// 			text: 'Quem sou eu?',
-			// 		},
-			// 		{
-			// 			id: 'id3',
-			// 			text: 'Nada, obrigado.',
-			// 		},
-			// 	],
-			// 	'Oi? ta falando de mim? Em que posso te ajudar?'
-			// );
-			console.log('MENU ATIVADO');
-			await client.sendText(from, `Oi, sou o Bruce, robô que auxilia o Kauã. Em que posso te ajudar?\nSe for só com ele, aguarda que ele já vem. 😊`);
-		}
 		
 		switch (falas) {
-			case 'figurinha':
-			case 'faz figurinha':
-			case 'sticker':
-				await client.sendText(from, 'Se for uma figurinha com imagem, mande-a com *!s* na legenda, e se for um gif mande-o com *!sg* na legenda.');
-				break;
-				
-			case 'seu pix':
-			case 'sua pix':
-			case 'sua chave pix':
-			case 'chave pix':
-			case 'pix':
-				await client.sendText(from, 'Minha chave pix é o meu email:');
-				await client.sendText(from, 'kaualandi@hotmail.com');
-				break;
-			case 'quanto te devo':
-			case 'quanto ti devo':
-			case 'quanto devo':
-			case 'te devendo':
-			case 'ti devendo':
-				await client.sendText(from, 'Oi, sou eu, o Bruce. Bom, a quantidade tem que ver com o Kauã, mas a chave pix é o email dele:');
-				await client.sendText(from, 'kaualandi@hotmail.com');
-				break;
-
 			case 'me ajuda bot':
-			case 'me ajuda':
 			case 'bot me ajuda':
 				await client.sendText(from, help);
 				break;
 
-			case '!berrante':
-			case 'toca berrante':
-			case 'toca o berrante':
-			case 'bot toca berrante':
-			case 'toca o berrante bot':
-			case 'toca o berrante savio':
-				await client.sendFile(from, './media/berrante.mpeg', 'Toca o berrante seu moço', 'AAAAAAAAAUHHH', id);
-				break;
-
-			case 'trem bala':
-				await client.sendFile(from, './media/trembala.mpeg', 'Trem bala', 'AAAAAAAAAUHHH', id);
-				break;
-
-			case 'vamos acordar':
-				await client.sendFile(from, './media/vamoacordar.mpeg', 'Vamos acordar porra', 'AAAAAAAAAUHHH', id);
-				break;
-
-			case 'bom dia':
-				await client.sendFile(from, './media/bomdia.mpeg', 'Bom dia', 'AAAAAAAAAUHHH', id);
-				break;
-
-			case 'acorda corno':
-				await client.sendFile(from, './media/acordaCorno.mpeg', 'Acorda corno', 'AAAAAAAAAUHHH', id);
-				break;
-
-			case 'acorda':
-				await client.sendFile(from, './media/acorda.mpeg', 'Acorda', 'AAAAAAAAAUHHH', id);
-				break;
-
-			case 'sexto':
-			case 'sextou':
-			case 'sextô':
-			case 'sextôu':
-				if (moment().format('dddd') == 'sexta-feira') {
-					await client.reply(from, 'ôpa, bora??', id);
-					const gif1 = await fs.readFileSync('./media/sexto.webp', { encoding: 'base64' });
-					await client.sendImageAsSticker(from, `data:image/gif;base64,${gif1.toString('base64')}`);
-				} else {
-					await client.reply(from, `Uai, hoje ainda e ${moment().format('dddd')} e você já ta procurando sexta-feira?....`, id);
-				}
-
-				break;
-
-			case 'bom dia bot':
-			case 'Bom dia':
-			case 'bom dia':
-				await client.reply(from, 'Bom dia! Bruce falando, aguarda por favor que o Kauã já vem.', id);
-				const gif3 = await fs.readFileSync('./media/tudosobcontrole.webp', { encoding: 'base64' });
-				await client.sendImageAsSticker(from, `data:image/gif;base64,${gif3.toString('base64')}`);
-				break;
-
-			case 'boa tarde bot':
-			case 'boa tarde':
-				await client.reply(from, `Boa tarde! Bruce falando, aguarda por favor que o Kauã já vem.`, id);
-				break;
-
-			case 'boa noite bot':
-			case 'boa noite':
-				await client.reply(from, `Boa noite! Bruce falando, aguarda por favor que o Kauã já vem.`, id);
-				break;
-
-			case 'que dia e hoje bot':
-			case 'que dia é hoje bot':
-			case 'oi bot que dia é hoje?':
-			case 'que dia e hoje?':
-			case 'que dia é hoje?':
-				await client.reply(from, `Tem calendário não? hoje é dia ${moment().format('DD/MM/YYYY HH:mm:ss')}`, id);
-				break;
-
-			case 'que dia e hoje bot ?':
-			case 'que dia é hoje bot ?':
-			case 'que dia e hoje ?':
-			case 'que dia é hoje ?':
-				await client.reply(
-					from,
-					`Você não tem calendário não? hoje é dia ${moment().format('DD/MM/YYYY HH:mm:ss')}`,
-					id
-				);
-				break;
-
 			case 'oi bot':
-				await client.reply(from, 'Fala? que ta pegando? sei fazer algumas coisas, digite: *me ajuda*', id);
-				break;
-
-			case 'como vc está bot?':
-			case 'como vai bot?':
-			case 'bot como vc está?':
-			case 'bot como vai?':
-			case 'oi bot como vai?':
-			case 'bot como vc esta?':
-			case 'oi bot como vc esta?':
-			case 'oi bot como vc ta?':
-				const gif99 = await fs.readFileSync('./media/tranquilao.webp', { encoding: 'base64' });
-				await client.sendImageAsSticker(from, `data:image/gif;base64,${gif99.toString('base64')}`);
-				break;
-
-			case 'fala bot':
-				await client.reply(from, 'Fala você... ou digite: !ajuda', id);
-				const gif4 = await fs.readFileSync('./media/pensando.webp', { encoding: 'base64' });
-				await client.sendImageAsSticker(from, `data:image/gif;base64,${gif4.toString('base64')}`);
+				await client.reply(from, 'Fala? que ta pegando? sei fazer algumas coisas, digite: *!ajuda*', id);
 				break;
 		}
 
 		switch (command) {
+			case '!pix':
+				await client.sendText(from, 'Minha chave pix é o meu email:');
+				await client.sendText(from, 'kaualandi@hotmail.com');
+				break;
 			case '!concursos':
 			case '!concurso':
 				if (args.length === 1) return client.reply(from, 'Preciso de um estado para localizar os concursos...', id);
