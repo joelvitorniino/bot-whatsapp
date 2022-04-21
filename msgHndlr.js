@@ -22,6 +22,8 @@ const credentials = {
 	private_key: config.GOOGLE_PRIVATE_KEY,
 };
 
+const tokenConsultas = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjNmMzFjNzBkZjczZTIzOTNmNTdlYWZhZWNjMGUzMDA4YmEzMTAwN2Y3MzJlYmVjZDFkYzRkOTRhOThjNGU4OWJhOTM0OWNiMWUwNDZjZmFiIn0.eyJhdWQiOiIyIiwianRpIjoiM2YzMWM3MGRmNzNlMjM5M2Y1N2VhZmFlY2MwZTMwMDhiYTMxMDA3ZjczMmViZWNkMWRjNGQ5NGE5OGM0ZTg5YmE5MzQ5Y2IxZTA0NmNmYWIiLCJpYXQiOjE2Mjg1Mzk5NjgsIm5iZiI6MTYyODUzOTk2OCwiZXhwIjoxOTQ0MDcyNzY4LCJzdWIiOiI0NzE4Iiwic2NvcGVzIjpbXX0.fYXRJLK3O0B9tU8v3EXsJUYRuTXtedZ_9ebbSZ80ea-OCJO6sQFOt0E_-HypKQ_ejcBeSLiyrtPX-Y14NYuwvSZzMN8-fiWhq4VASv8-xehPDm2tu8h-S4p5xRISF57gOk6fptz5oHXdN1twYtMBpbcGldtS0MkCEa6QYZOgiUYqtW0YOng9EbISkYBp8h67eGYq_Ry6GxjCTr6tEoJ4MhyrGuobNm_rHuRq77HH_qg2HjOXWwpocNJp5kGVnaBMp5NtEJHINutt0tDB8qofsomF6UXJBlCSa317TbjIpJVodL6Brms5ds7lXnhKYosmQ7q-LTUauf3N5hv1uVHrLAmKlV10Y8I0JrNvUGUcKEm-SexO2pB1Y56P8hpjDjknymkbtr_nopizMSq0cQYhv7Qn4KJ6Eo_qKT9tkO5z1a1g6BjguEnJ1D6KG1z2Qtp3jQQaHyQ_BIGrHizTSr6Fg1pc981_y07aCdKwz9t-Ea4hsvrPD1c-VZwEonabY9Q_GFKy8LtuOI_6CBnjuNaXyMfHmgSiCweEkQlXP9_BzmOjubUuzPIGEnP5-LB7RJr3mSxVmea3FoF7R62vQq4hV9LgTkJPLx-gHFeKorcGYct4ZZLxGFISUgye8AWAgmvWN29VVD2MiDRrvMfyv8hLmIGaXH0KzZwAG4NYCCdWGLs';
+
 const sessionClient = new dialogflow.SessionsClient({
 	projectId: config.GOOGLE_PROJECT_ID,
 	credentials,
@@ -31,8 +33,9 @@ const bannedUsers = [
 	'5521976607557@c.us', // Albarran
 ];
 const silenceBannedUsers = [
-	// '555591441492-1588522560@g.us', // Code Monkey
-	// '553195360492-1623288522@g.us' // Grupo dos bots
+	'558893752311-1627929773@g.us', // Jersu
+	'555591441492-1588522560@g.us', // Code Monkey
+	'553195360492-1623288522@g.us', // Grupo dos bots
 ]
 
 /**
@@ -314,6 +317,7 @@ module.exports = msgHandler = async (client, message) => {
 				break;
 		}
 
+		command.replaceAll('[\*_`]', '');
 		switch (command) {
 			case '!dialogflow':
 				if (args.length === 1) return client.reply(from, 'Escolha habilitar ou desabilitar!', id);
@@ -329,53 +333,98 @@ module.exports = msgHandler = async (client, message) => {
 
 				break;
 
-			case 'y0':
-				if (typeof teste != 'undefined') {
-					await client.sendText(from, `Copie e cole`, id);
-					await client.sendText(from, `${teste[0]}`, id);
-				} else {
-					await client.sendText(from, `Pesquise algo para começar...`, id);
-				}
+			case '!cpf':
+				if (args.length === 1) return client.reply(from, 'Ainda não adivinho coisas... preciso saber o CPF também!', id);
+
+				const cpf = args[1].match(/\d/g).join("");
+				if (cpf.length !== 11) return client.reply(from, 'Digite um CPF válido.', id);
+				await axios.post('https://api.targetdata-smart.com/api/PF/CPF', [cpf], {
+					headers: {
+						'Content-Type': 'application/json',
+						'Accept': 'application/json',
+						'Authorization': `Bearer ${tokenConsultas}`
+					}
+				}).then(async (response) => {
+					const { data } = response;
+					if (data.header.error === null) {
+						console.log('BELEZAA, NÃO DEU ERRO');
+						const result = data.result[0];
+						const cadastral = result.pessoa;
+						const {cadastral: pessoa, contato} = cadastral;
+						const telefone = contato.telefone;
+						
+						console.log('PESSOA É:', typeof pessoa);
+						console.log('TELEFONE É:', typeof telefone);
+						const {CPF, nomePrimeiro, nomeMeio, nomeUltimo, sexo, dataNascimento, statusReceitaFederal, rgNumero, rgOrgaoEmissor, rgUf, tituloEleitoral, nacionalidade, estadoCivil, maeCPF, maeNomePrimeiro, maeNomeMeio, maeNomeUltimo} = pessoa;
+						const nomeCompleto = `${nomePrimeiro || ''} ${nomeMeio || ''} ${nomeUltimo || ''}`;
+						const nomeCompletoMae = `${maeNomePrimeiro || ''} ${maeNomeMeio || ''} ${maeNomeUltimo || ''}`;
+						let telefones
+						if (telefone.length === 0) {
+							telefones = 'Nenhum telefone encontrado.';
+						} else if (telefone.length === 1) {
+							const {ddd, numero, operadora} = telefone[0];
+							telefones = `Telefone: (${ddd}) ${numero} - ${operadora}`;
+						} else if (telefone.length > 1) {
+							telefones = telefone.map(telefone => `Telefone: (${telefone.ddd}) ${telefone.numero} ${telefone.operadora ? '- '+telefone.operadora : ''}`).join('\n');
+						}
+						const stringToSend = `
+*=== CONSULTA REALIZADA ===* ${CPF ? '\nCPF: '+CPF : ''} ${nomeCompleto ? '\nNome: '+nomeCompleto : ''} ${sexo ? '\nSexo: '+sexo : ''} ${dataNascimento ? '\nData de nascimento: '+moment(dataNascimento).format('DD/MM/YYYY') : ''} ${statusReceitaFederal ? '\nStatus da receita federal: '+statusReceitaFederal : ''} ${rgNumero ? '\nRG: '+rgNumero : ''} ${rgOrgaoEmissor ? '\nOrgão emissor: '+rgOrgaoEmissor : ''} ${rgUf ? '\nUF: '+rgUf : ''} ${tituloEleitoral ? '\nTítulo de eleitor: '+tituloEleitoral : ''} ${nacionalidade ? '\nNacionalidade: '+nacionalidade : ''} ${estadoCivil ? '\nEstado civil: '+estadoCivil : ''} ${maeCPF ? '\nCPF da Mãe: '+maeCPF : ''} ${nomeCompletoMae !== '  ' ? '\nNome da Mãe: '+nomeCompletoMae : ''}
+
+*TELEFONES*
+${telefones}`;
+						await client.reply(from, stringToSend, id);
+					} else {
+						await client.reply(from, data.header.error, id);
+					}
+					
+				}).catch(async (error) => {
+					await client.reply(`Perai, deu merda: ${JSON.stringify(error)}`, id);
+				});
+				
 				break;
-			case 'y1':
-				if (typeof teste != 'undefined') {
-					await client.sendText(from, `Copie e cole`, id);
-					await client.sendText(from, `${teste[1]}`, id);
-				} else {
-					await client.sendText(from, `Pesquise algo para começar...`, id);
+
+			case '!nome':
+				if (args.length === 1) return client.reply(from, 'Ainda não adivinho coisas... preciso saber o nome também', id);
+
+				if (typeof args[1] == 'undefined') {
+					return await client.reply(from, `Coloca um . antes do nome`, id);
 				}
+
+				const nome = body.split('.')[1];
+
+				if (typeof nome === 'undefined') return client.reply(from, 'Coloca um . antes do nome', id);
+
+				await axios.post('https://api.targetdata-smart.com/api/PF/NOME', [nome], {
+					headers: {
+						'Content-Type': 'application/json',
+						'Accept': 'application/json',
+						'Authorization': `Bearer ${tokenConsultas}`
+					}
+				}).then(async (response) => {
+					const { data } = response;
+					if (data.header.error === null) {
+						console.log('BELEZAA, NÃO DEU ERRO');
+						const results = data.result;
+						let stringToSend = `*=== CONSULTA REALIZADA ===*`;
+
+						results.forEach(result => {
+							const pessoa = result.pessoa.cadastral;
+							const {CPF, nomePrimeiro, nomeMeio, nomeUltimo, dataNascimento} = pessoa;
+							const nomeCompleto = `${nomePrimeiro || ''} ${nomeMeio || ''} ${nomeUltimo || ''}`;
+							const stringPreparada =`${CPF ? '\nCPF: '+CPF : ''} ${nomeCompleto ? '\nNome: '+nomeCompleto : ''} ${dataNascimento ? '\nData de nascimento: '+moment(dataNascimento).format('DD/MM/YYYY') : ''}\n`;
+							console.log(stringToSend += stringPreparada);
+						});
+						client.reply(from, stringToSend, id);
+					} else {
+						await client.reply(from, data.header.error, id);
+					}
+				}).catch(async (error) => {
+					await client.reply(`Perai, deu merda: ${JSON.stringify(error)}`, id);
+				});
 				break;
-			case 'y2':
-				if (typeof teste != 'undefined') {
-					await client.sendText(from, `Copie e cole`, id);
-					await client.sendText(from, `${teste[2]}`, id);
-				} else {
-					await client.sendText(from, `Pesquise algo para começar...`, id);
-				}
-				break;
-			case 'y3':
-				if (typeof teste != 'undefined') {
-					await client.sendText(from, `Copie e cole`, id);
-					await client.sendText(from, `${teste[3]}`, id);
-				} else {
-					await client.sendText(from, `Pesquise algo para começar...`, id);
-				}
-				break;
-			case 'y4':
-				if (typeof teste != 'undefined') {
-					await client.sendText(from, `Copie e cole`, id);
-					await client.sendText(from, `${teste[4]}`, id);
-				} else {
-					await client.sendText(from, `Pesquise algo para começar...`, id);
-				}
-				break;
-			case 'y5':
-				if (typeof teste != 'undefined') {
-					await client.sendText(from, `Copie e cole`, id);
-					await client.sendText(from, `${teste[5]}`, id);
-				} else {
-					await client.sendText(from, `Pesquise algo para começar...`, id);
-				}
+			
+			case '!about':
+				await client.sendText(from, `Sou o Bruce um bot para whatsapp de código aberto, criado pelo @+553195360492 e aprimorado pelo @+5521999222644.\nPoderá ver meu código em: github.com/kaualandi/bot-whatsapp.`, id);
 				break;
 
 			case '!concursos':
@@ -754,11 +803,11 @@ module.exports = msgHandler = async (client, message) => {
 				if (isMedia && type === 'image') {
 					const mediaData = await decryptMedia(message, uaOverride);
 					const imageBase64 = `data:${mimetype};base64,${mediaData.toString('base64')}`;
-					await client.sendImageAsSticker(from, imageBase64, { author: 'Bot do JhowJhoe', pack: 'PackDoBot', keepScale: true });
+					await client.sendImageAsSticker(from, imageBase64, { author: 'Bot do Kauã Landi', pack: 'PackDoBot', keepScale: true });
 				} else if (quotedMsg && quotedMsg.type == 'image') {
 					const mediaData = await decryptMedia(quotedMsg, uaOverride);
 					const imageBase64 = `data:${quotedMsg.mimetype};base64,${mediaData.toString('base64')}`;
-					await client.sendImageAsSticker(from, imageBase64, { author: 'Bot do JhowJhoe', pack: 'PackDoBot', keepScale: true });
+					await client.sendImageAsSticker(from, imageBase64, { author: 'Bot do Kauã Landi', pack: 'PackDoBot', keepScale: true });
 				} else if (args.length === 2) {
 					const url = args[1];
 					if (url.match(isUrl)) {
@@ -781,7 +830,7 @@ module.exports = msgHandler = async (client, message) => {
 
 						await client.sendMp4AsSticker(from, `data:${mimetype};base64,${mediaData.toString('base64')}`, null, {
 							stickerMetadata: true,
-							author: 'Bot do JhowJhoe',
+							author: 'Bot do Kauã Landi',
 							pack: 'PackDoBot',
 							fps: 10,
 							square: '512',
@@ -892,7 +941,7 @@ module.exports = msgHandler = async (client, message) => {
 				for (let i = 0; i < mentionedJidList.length; i++) {
 					if (groupAdmins.includes(mentionedJidList[i])) return client.reply(from, mess.error.Ki, id);
 
-					console.log('BANIDO ===>', mentionedJidList[i]);
+					console.log('BANIDO ===>', mentionedJidList[i].replace(/@c.us/g, ''));
 					await client.removeParticipant(groupId, mentionedJidList[i]);
 				}
 				break;
@@ -937,17 +986,6 @@ module.exports = msgHandler = async (client, message) => {
 			case '!menu':
 			case '!help':
 				await client.sendText(from, help);
-				let batteryLevel = await client.getBatteryLevel();
-				let isPlugged = await client.getIsPlugged(from);
-				let connectionState = await client.getConnectionState();
-
-				await client.reply(
-					from,
-					`----------------------\n*Status*: ${connectionState}\n*Bateria*: ${batteryLevel}%\n*Carregando*: ${
-						isPlugged ? 'Sim' : 'Não'
-					}\n----------------------`,
-					id
-				);
 				break;
 
 			case '':
@@ -1063,7 +1101,7 @@ module.exports = msgHandler = async (client, message) => {
 				}
 
 				break;
-				case '!aniversário':
+			case '!aniversário':
 			case '!aniversario':
 				if (args.length === 1) {
 					client.reply(from, 'Como eu vou adivinhar a data? Mande no formato DD/MM/YYYY', id);
@@ -1090,6 +1128,54 @@ module.exports = msgHandler = async (client, message) => {
 						client.reply(from, message, id);
 					}
 				}
+				break;
+			case '!voteban':
+				if (!isGroupMsg) return client.reply(from, 'Este recurso só pode ser usado em grupos', id);
+				if (mentionedJidList.length === 0) return client.reply(from, 'Para usar este recurso, envie o comando *!voteban* @tagnome', id);
+				if (mentionedJidList.length >= 2) return client.reply(from, 'Desculpe, este comando só pode ser usado com 1 pessoa.', id);
+				console.log('voteban');
+				
+				fs.ReadStream('./voteban.json', 'utf8', (err, data) => {
+					const user = mentionedJidList[0];
+					if (err) return client.reply(`Puts, deu merda não consegui ler a lista de voteban. 😔 \nErro: ${err}`, id);
+					let votebanJson = JSON.parse(data);
+
+					if (votebanJson[groupId][user] === undefined) votebanJson[groupId][user] = [];
+					if (votebanJson[groupId][user].includes(pushname)) return client.reply(from, 'Você já votou, seu voto não foi computado, se quiser remover o ban use *!unvoteban*.', id);
+					
+					votebanJson[groupId][user].push(pushname);
+
+					fs.WriteStream('./voteban.json', JSON.stringify(votebanJson), 'utf8', (err) => {
+						if (err) return client.reply(`Puts, deu merda não consegui salvar o voto. 😔 \nErro: ${err}`, id);
+						client.reply(from, `${votebanJson[groupId][user].length}/10 vote ban`, id);
+					});
+
+					if (votebanJson[groupId][user].length == 10) {
+						client.sendText(from, `${user} foi banido por atingir 10 votos!`);
+						client.removeParticipant(groupId, user);
+					}
+				});
+				break;
+			case '!unvoteban':
+				if (!isGroupMsg) return client.reply(from, 'Este recurso só pode ser usado em grupos', id);
+				if (mentionedJidList.length === 0) return client.reply(from, 'Para usar este recurso, envie o comando *!unvoteban* @tagnome', id);
+				if (mentionedJidList.length >= 2) return client.reply(from, 'Desculpe, este comando só pode ser usado com 1 pessoa.', id);
+				
+				fs.ReadStream('./voteban.json', 'utf8', (err, data) => {
+					const user = mentionedJidList[0];
+					if (err) return client.reply(`Puts, deu merda não consegui ler a lista de voteban. 😔 \nErro: ${err}`, id);
+					let votebanJson = JSON.parse(data);
+
+					if (votebanJson[groupId][user] === undefined) votebanJson[groupId][user] = [];
+					if (!votebanJson[groupId][user].includes(pushname)) return client.reply(from, 'Você não votou, seu voto não foi computado, se quiser votar use *!voteban*.', id);
+					
+					votebanJson[groupId][user].splice(votebanJson[groupId][user].indexOf(pushname), 1);
+
+					fs.WriteStream('./voteban.json', JSON.stringify(votebanJson), 'utf8', (err) => {
+						if (err) return client.reply(`Puts, deu merda não consegui salvar o voto. 😔 \nErro: ${err}`, id);
+						client.reply(from, `${votebanJson[groupId][user].length}/10 vote ban`, id);
+					});
+				});
 				break;
 			}
 			} catch (err) {
