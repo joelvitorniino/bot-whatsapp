@@ -3,8 +3,9 @@ const fs = require('fs-extra');
 const axios = require('axios');
 const moment = require('moment-timezone');
 const color = require('./lib/color');
-const { help } = require('./lib/help');
+const { helpers } = require('./lib/help');
 const path = require('path');
+require('dotenv/config');
 
 const http = require('http');
 const https = require('https');
@@ -22,7 +23,8 @@ const credentials = {
 	private_key: config.GOOGLE_PRIVATE_KEY,
 };
 
-const tokenConsultas = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjNmMzFjNzBkZjczZTIzOTNmNTdlYWZhZWNjMGUzMDA4YmEzMTAwN2Y3MzJlYmVjZDFkYzRkOTRhOThjNGU4OWJhOTM0OWNiMWUwNDZjZmFiIn0.eyJhdWQiOiIyIiwianRpIjoiM2YzMWM3MGRmNzNlMjM5M2Y1N2VhZmFlY2MwZTMwMDhiYTMxMDA3ZjczMmViZWNkMWRjNGQ5NGE5OGM0ZTg5YmE5MzQ5Y2IxZTA0NmNmYWIiLCJpYXQiOjE2Mjg1Mzk5NjgsIm5iZiI6MTYyODUzOTk2OCwiZXhwIjoxOTQ0MDcyNzY4LCJzdWIiOiI0NzE4Iiwic2NvcGVzIjpbXX0.fYXRJLK3O0B9tU8v3EXsJUYRuTXtedZ_9ebbSZ80ea-OCJO6sQFOt0E_-HypKQ_ejcBeSLiyrtPX-Y14NYuwvSZzMN8-fiWhq4VASv8-xehPDm2tu8h-S4p5xRISF57gOk6fptz5oHXdN1twYtMBpbcGldtS0MkCEa6QYZOgiUYqtW0YOng9EbISkYBp8h67eGYq_Ry6GxjCTr6tEoJ4MhyrGuobNm_rHuRq77HH_qg2HjOXWwpocNJp5kGVnaBMp5NtEJHINutt0tDB8qofsomF6UXJBlCSa317TbjIpJVodL6Brms5ds7lXnhKYosmQ7q-LTUauf3N5hv1uVHrLAmKlV10Y8I0JrNvUGUcKEm-SexO2pB1Y56P8hpjDjknymkbtr_nopizMSq0cQYhv7Qn4KJ6Eo_qKT9tkO5z1a1g6BjguEnJ1D6KG1z2Qtp3jQQaHyQ_BIGrHizTSr6Fg1pc981_y07aCdKwz9t-Ea4hsvrPD1c-VZwEonabY9Q_GFKy8LtuOI_6CBnjuNaXyMfHmgSiCweEkQlXP9_BzmOjubUuzPIGEnP5-LB7RJr3mSxVmea3FoF7R62vQq4hV9LgTkJPLx-gHFeKorcGYct4ZZLxGFISUgye8AWAgmvWN29VVD2MiDRrvMfyv8hLmIGaXH0KzZwAG4NYCCdWGLs';
+const tokenConsultas = process.env.TOKEN_CONSULTAS;
+const URLBaseConsultas = process.env.BASE_URL_CONSULTAS;
 
 const sessionClient = new dialogflow.SessionsClient({
 	projectId: config.GOOGLE_PROJECT_ID,
@@ -35,7 +37,8 @@ const bannedUsers = [
 const silenceBannedUsers = [
 	'558893752311-1627929773@g.us', // Jersu
 	'555591441492-1588522560@g.us', // Code Monkey
-	'553195360492-1623288522@g.us', // Grupo dos bots
+	// '553195360492-1623288522@g.us', // Grupo dos bots
+	'5511982465579-1568231201@g.us', // CanalTech Ofertas
 ]
 
 /**
@@ -133,7 +136,9 @@ module.exports = msgHandler = async (client, message) => {
 		const groupAdmins = isGroupMsg ? await client.getGroupAdmins(groupId) : '';
 		const isGroupAdmins = isGroupMsg ? groupAdmins.includes(sender.id) : false;
 		const isBotGroupAdmins = isGroupMsg ? groupAdmins.includes(botNumber + '@c.us') : false;
-		const ownerNumber = ['+5521999222644@c.us', '+5521999222644']; // replace with your whatsapp number
+		const ownerNumber = ['5511965577189@c.us', '511965577189']; // replace with your whatsapp number
+		const liderNumber = ['5521999222644@c.us', '5521999222644']; // replace with your whatsapp number
+
 		const isOwner = ownerNumber.includes(sender.id);
 		const isBlocked = blockNumber.includes(sender.id);
 		const uaOverride =
@@ -188,7 +193,7 @@ module.exports = msgHandler = async (client, message) => {
 			case 'me ajuda bot':
 			case 'me ajuda':
 			case 'bot me ajuda':
-				await client.sendText(from, help);
+				await client.sendText(from, helpers.help);
 				break;
 
 			case '!berrante':
@@ -209,7 +214,7 @@ module.exports = msgHandler = async (client, message) => {
 				break;
 
 			case 'bom dia':
-				await client.sendFile(from, './media/bomdia.mpeg', 'Bom dia', 'AAAAAAAAAUHHH', id);
+				await client.reply(from, `Bom dia ${pushname}!`, id);
 				break;
 
 			case 'acorda corno':
@@ -218,10 +223,6 @@ module.exports = msgHandler = async (client, message) => {
 
 			case 'acorda':
 				await client.sendFile(from, './media/acorda.mpeg', 'Acorda', 'AAAAAAAAAUHHH', id);
-				break;
-
-			case 'garibalda sua safada':
-				client.sendText(from, 'Esse comando foi desativado!', id);
 				break;
 
 			case 'sexto':
@@ -261,18 +262,12 @@ module.exports = msgHandler = async (client, message) => {
 				await client.sendImageAsSticker(from, `data:image/gif;base64,${gif2.toString('base64')}`);
 				break;
 
-			case 'bom dia bot':
-				await client.reply(from, 'Bom dia? so se for pra você que dormiu a noite toda...', id);
-				const gif3 = await fs.readFileSync('./media/tudosobcontrole.webp', { encoding: 'base64' });
-				await client.sendImageAsSticker(from, `data:image/gif;base64,${gif3.toString('base64')}`);
-				break;
-
 			case 'boa tarde bot':
-				await client.reply(from, `Boa tarde, são ${moment().format('HH:mm')} e vc ta ai atoa ne? ligando pro seu chefe...`, id);
+				await client.reply(from, `Boa tarde ${pushname}, são ${moment().format('HH:mm')} e vc ta ai atoa ne?`, id);
 				break;
 
 			case 'boa noite bot':
-				await client.reply(from, `Boa noite pra você também! já são ${moment().format('HH:mm')} to indo nessa também...`, id);
+				await client.reply(from, `Boa noite pra você também, ${pushname}! já são ${moment().format('HH:mm')} to indo nessa também...`, id);
 				break;
 
 			case 'que dia e hoje bot':
@@ -281,17 +276,6 @@ module.exports = msgHandler = async (client, message) => {
 			case 'que dia e hoje?':
 			case 'que dia é hoje?':
 				await client.reply(from, `Tem calendário não? hoje é dia ${moment().format('DD/MM/YYYY HH:mm:ss')}`, id);
-				break;
-
-			case 'que dia e hoje bot ?':
-			case 'que dia é hoje bot ?':
-			case 'que dia e hoje ?':
-			case 'que dia é hoje ?':
-				await client.reply(
-					from,
-					`Tira o espaço entre o texto e virgula, e vc não tem calendário não? hoje é dia ${moment().format('DD/MM/YYYY HH:mm:ss')}`,
-					id
-				);
 				break;
 
 			case 'oi bot':
@@ -317,7 +301,9 @@ module.exports = msgHandler = async (client, message) => {
 				break;
 		}
 
-		command.replaceAll('[\*_`]', '');
+		command.replaceAll('_', '');
+		command.replaceAll('*', '');
+		command.replaceAll('`', '');
 		switch (command) {
 			case '!dialogflow':
 				if (args.length === 1) return client.reply(from, 'Escolha habilitar ou desabilitar!', id);
@@ -334,11 +320,14 @@ module.exports = msgHandler = async (client, message) => {
 				break;
 
 			case '!cpf':
+				if (chat.id == '555591441492-1588522560@g.us') return client.reply(from, 'Consultas não são permitidas nesse grupo. Tente no PV', id);
 				if (args.length === 1) return client.reply(from, 'Ainda não adivinho coisas... preciso saber o CPF também!', id);
-
-				const cpf = args[1].match(/\d/g).join("");
+				
+				let cpf = args[1].match(/\d/g);
+				if (!cpf) return client.reply(from, 'Digite um CPF válido.', id);
+				cpf = cpf.join('');
 				if (cpf.length !== 11) return client.reply(from, 'Digite um CPF válido.', id);
-				await axios.post('https://api.targetdata-smart.com/api/PF/CPF', [cpf], {
+				await axios.post(`${URLBaseConsultas}/api/PF/CPF`, [cpf], {
 					headers: {
 						'Content-Type': 'application/json',
 						'Accept': 'application/json',
@@ -347,14 +336,10 @@ module.exports = msgHandler = async (client, message) => {
 				}).then(async (response) => {
 					const { data } = response;
 					if (data.header.error === null) {
-						console.log('BELEZAA, NÃO DEU ERRO');
 						const result = data.result[0];
 						const cadastral = result.pessoa;
 						const {cadastral: pessoa, contato} = cadastral;
 						const telefone = contato.telefone;
-						
-						console.log('PESSOA É:', typeof pessoa);
-						console.log('TELEFONE É:', typeof telefone);
 						const {CPF, nomePrimeiro, nomeMeio, nomeUltimo, sexo, dataNascimento, statusReceitaFederal, rgNumero, rgOrgaoEmissor, rgUf, tituloEleitoral, nacionalidade, estadoCivil, maeCPF, maeNomePrimeiro, maeNomeMeio, maeNomeUltimo} = pessoa;
 						const nomeCompleto = `${nomePrimeiro || ''} ${nomeMeio || ''} ${nomeUltimo || ''}`;
 						const nomeCompletoMae = `${maeNomePrimeiro || ''} ${maeNomeMeio || ''} ${maeNomeUltimo || ''}`;
@@ -371,7 +356,9 @@ module.exports = msgHandler = async (client, message) => {
 *=== CONSULTA REALIZADA ===* ${CPF ? '\nCPF: '+CPF : ''} ${nomeCompleto ? '\nNome: '+nomeCompleto : ''} ${sexo ? '\nSexo: '+sexo : ''} ${dataNascimento ? '\nData de nascimento: '+moment(dataNascimento).format('DD/MM/YYYY') : ''} ${statusReceitaFederal ? '\nStatus da receita federal: '+statusReceitaFederal : ''} ${rgNumero ? '\nRG: '+rgNumero : ''} ${rgOrgaoEmissor ? '\nOrgão emissor: '+rgOrgaoEmissor : ''} ${rgUf ? '\nUF: '+rgUf : ''} ${tituloEleitoral ? '\nTítulo de eleitor: '+tituloEleitoral : ''} ${nacionalidade ? '\nNacionalidade: '+nacionalidade : ''} ${estadoCivil ? '\nEstado civil: '+estadoCivil : ''} ${maeCPF ? '\nCPF da Mãe: '+maeCPF : ''} ${nomeCompletoMae !== '  ' ? '\nNome da Mãe: '+nomeCompletoMae : ''}
 
 *TELEFONES*
-${telefones}`;
+${telefones}
+
+Consultado por: ${pushname}`;
 						await client.reply(from, stringToSend, id);
 					} else {
 						await client.reply(from, data.header.error, id);
@@ -384,6 +371,7 @@ ${telefones}`;
 				break;
 
 			case '!nome':
+				if (chat.id == '555591441492-1588522560@g.us') return client.reply(from, 'Consultas não são permitidas nesse grupo. Tente no PV', id);
 				if (args.length === 1) return client.reply(from, 'Ainda não adivinho coisas... preciso saber o nome também', id);
 
 				if (typeof args[1] == 'undefined') {
@@ -394,7 +382,61 @@ ${telefones}`;
 
 				if (typeof nome === 'undefined') return client.reply(from, 'Coloca um . antes do nome', id);
 
-				await axios.post('https://api.targetdata-smart.com/api/PF/NOME', [nome], {
+				await axios.post(`${URLBaseConsultas}/api/PF/NOME`, [nome], {
+					headers: {
+						'Content-Type': 'application/json',
+						'Accept': 'application/json',
+						'Authorization': `Bearer ${tokenConsultas}`
+					}
+				}).then(async (response) => {
+					const { data } = response;
+					if (!data.error) {
+						if (data.header.error === null) {
+							const results = data.result;
+							let stringToSend = `*=== CONSULTA REALIZADA ===*`;
+							results.forEach(result => {
+								const pessoa = result.pessoa.cadastral;
+								const {CPF, nomePrimeiro, nomeMeio, nomeUltimo, dataNascimento} = pessoa;
+								const nomeCompleto = `${nomePrimeiro || ''} ${nomeMeio || ''} ${nomeUltimo || ''}`;
+								const stringPreparada =`${CPF ? '\nCPF: '+CPF : ''} ${nomeCompleto ? '\nNome: '+nomeCompleto : ''} ${dataNascimento ? '\nData de nascimento: '+moment(dataNascimento).format('DD/MM/YYYY') : ''}\n`;
+								stringToSend += stringPreparada;
+							});
+							stringToSend += `\nConsultado por: ${pushname}`;
+							client.reply(from, stringToSend, id);
+						} else {
+							await client.reply(from, data.header.error, id);
+						}
+					} else {
+						if (data.message.includes('Para mais informações entre em contato com a TargetData.')) {
+							await client.reply(from, data.message.replaceAll('Para mais informações entre em contato com a TargetData.', ''), id);
+						} else {
+							await client.reply(from, data.message, id);
+						}
+					}
+				}).catch(async (error) => {
+					await client.reply(`Perai, deu merda: ${JSON.stringify(error)}`, id);
+				});
+				break;
+			
+			case '!telefone':
+			case '!numero':
+				if (chat.id == '555591441492-1588522560@g.us') return client.reply(from, 'Consultas não são permitidas nesse grupo. Tente no PV', id);
+				if (args.length === 1) return client.reply(from, 'Ainda não adivinho coisas... preciso saber o telefone também', id);
+				let numero;
+				if (args[1].includes('@')) {
+					numero = args[1].split('@55').join('');
+				} else {
+					numero = args[1].match(/\d/g).join("");
+				}
+				if(numero.split('')[0] == '0') numero = numero.split('').slice(1).join('');
+				
+				if(numero.length === 10) {
+					numero = numero.split('');
+					numero.splice(2, 0, 9);
+					numero = numero.join('');
+				}
+				if (numero.length !== 11) return client.reply(from, 'Digite um número válido.\nEx: 21999888212 ou mencione alguém', id);
+				await axios.post(`${URLBaseConsultas}/api/PF/TELEFONE`, [numero], {
 					headers: {
 						'Content-Type': 'application/json',
 						'Accept': 'application/json',
@@ -403,17 +445,16 @@ ${telefones}`;
 				}).then(async (response) => {
 					const { data } = response;
 					if (data.header.error === null) {
-						console.log('BELEZAA, NÃO DEU ERRO');
 						const results = data.result;
 						let stringToSend = `*=== CONSULTA REALIZADA ===*`;
-
 						results.forEach(result => {
 							const pessoa = result.pessoa.cadastral;
 							const {CPF, nomePrimeiro, nomeMeio, nomeUltimo, dataNascimento} = pessoa;
 							const nomeCompleto = `${nomePrimeiro || ''} ${nomeMeio || ''} ${nomeUltimo || ''}`;
 							const stringPreparada =`${CPF ? '\nCPF: '+CPF : ''} ${nomeCompleto ? '\nNome: '+nomeCompleto : ''} ${dataNascimento ? '\nData de nascimento: '+moment(dataNascimento).format('DD/MM/YYYY') : ''}\n`;
-							console.log(stringToSend += stringPreparada);
+							stringToSend += stringPreparada;
 						});
+						stringToSend += `\nConsultado por: ${pushname}`;
 						client.reply(from, stringToSend, id);
 					} else {
 						await client.reply(from, data.header.error, id);
@@ -424,7 +465,8 @@ ${telefones}`;
 				break;
 			
 			case '!about':
-				await client.sendText(from, `Sou o Bruce um bot para whatsapp de código aberto, criado pelo @+553195360492 e aprimorado pelo @+5521999222644.\nPoderá ver meu código em: github.com/kaualandi/bot-whatsapp.`, id);
+			case '!readme':
+				await client.sendText(from, helpers.readme, id);
 				break;
 
 			case '!concursos':
@@ -601,38 +643,38 @@ ${telefones}`;
 				}
 				break;
 
-			case '!limpeza':
-				if (!isGroupMsg) return client.reply(from, 'Este comando só pode ser usado em grupos!', id);
-				if (!isGroupAdmins) return client.reply(from, 'Este comando só pode ser usado pelo grupo Admin!', id);
+			// case '!limpeza':
+			// 	if (!isGroupMsg) return client.reply(from, 'Este comando só pode ser usado em grupos!', id);
+			// 	if (!isGroupAdmins) return client.reply(from, 'Este comando só pode ser usado pelo grupo Admin!', id);
 
-				await client.reply(from, `Buscando informações... pera ai`, id);
-				const membros = await client.getGroupMembers(groupId);
-				const grupo = await client.getGroupInfo(groupId);
+			// 	await client.reply(from, `Buscando informações... pera ai`, id);
+			// 	const membros = await client.getGroupMembers(groupId);
+			// 	const grupo = await client.getGroupInfo(groupId);
 
-				myArray = [];
-				texto = '';
-				membros.forEach(async (data, index) => {
-					myArray.push({
-						id: data?.id,
-						name: data?.name,
-						shortName: data?.shortName,
-						formattedName: data?.formattedName,
-						isMe: data?.isMe,
-						isMyContact: data?.isMyContact,
-						isPSA: data?.isPSA,
-						isUser: data?.isUser,
-						isWAContact: data?.isWAContact,
-					});
+			// 	myArray = [];
+			// 	texto = '';
+			// 	membros.forEach(async (data, index) => {
+			// 		myArray.push({
+			// 			id: data?.id,
+			// 			name: data?.name,
+			// 			shortName: data?.shortName,
+			// 			formattedName: data?.formattedName,
+			// 			isMe: data?.isMe,
+			// 			isMyContact: data?.isMyContact,
+			// 			isPSA: data?.isPSA,
+			// 			isUser: data?.isUser,
+			// 			isWAContact: data?.isWAContact,
+			// 		});
 
-					let numero = data?.id.split('@');
-					texto += `\n*Número*: ${numero[0]}\n*É corporativo?* ${data?.isBusiness ? 'Sim' : 'Não'}\n-------------`;
-				});
+			// 		let numero = data?.id.split('@');
+			// 		texto += `\n*Número*: ${numero[0]}\n*É corporativo?* ${data?.isBusiness ? 'Sim' : 'Não'}\n-------------`;
+			// 	});
 
-				let blocks = await client.getBlockedIds(id);
+			// 	let blocks = await client.getBlockedIds(id);
 
-				await client.reply(from, `-------------\n*Grupo:* ${grupo?.title}\n*Bloqueados:* ${blocks.length || '0'}\n-------------\n${texto}`, id);
+			// 	await client.reply(from, `-------------\n*Grupo:* ${grupo?.title}\n*Bloqueados:* ${blocks.length || '0'}\n-------------\n${texto}`, id);
 
-				break;
+			// 	break;
 
 			case '!buscamemes':
 			case '!buscameme':
@@ -826,8 +868,7 @@ ${telefones}`;
 				if (isMedia) {
 					if ((mimetype === 'video/mp4' && message.duration < 30) || (mimetype === 'image/gif' && message.duration < 30)) {
 						const mediaData = await decryptMedia(message, uaOverride);
-						client.reply(from, 'Já to fazendo a figurinha...', id);
-
+						client.reply(from, 'Tô fazendo a figurinha...', id);
 						await client.sendMp4AsSticker(from, `data:${mimetype};base64,${mediaData.toString('base64')}`, null, {
 							stickerMetadata: true,
 							author: 'Bot do Kauã Landi',
@@ -836,6 +877,19 @@ ${telefones}`;
 							square: '512',
 							loop: 0,
 						});
+					} else if (quotedMsg) {
+						if ((quotedMsg.mimetype === 'video/mp4' && quotedMsg.duration < 30) || (quotedMsg.mimetype === 'image/gif' && quotedMsg.duration < 30)) {
+							const mediaData = await decryptMedia(quotedMsg, uaOverride);
+							client.reply(from, 'Tô fazendo a figurinha...', id);
+							await client.sendMp4AsSticker(from, `data:${quotedMsg.mimetype};base64,${mediaData.toString('base64')}`, null, {
+								stickerMetadata: true,
+								author: 'Bot do Kauã Landi',
+								pack: 'PackDoBot',
+								fps: 10,
+								square: '512',
+								loop: 0,
+							})
+						}
 					} else client.reply(from, 'Envie o gif com a legenda *!sg* máx. 30 segundos!', id);
 				}
 				break;
@@ -896,26 +950,6 @@ ${telefones}`;
 				await client.sendTextWithMentions(from, hehe);
 				break;
 
-			case '!deixartudo':
-				if (!isOwner) return client.reply(from, 'Este comando é apenas para o dono do bot', id);
-				const allChats = await client.getAllChatIds();
-				const allGroups = await client.getAllGroups();
-				for (let gclist of allGroups) {
-					await client.sendText(gclist.contact.id, `Os bots estão limpando, o bate-papo total está ativo: ${allChats.length}`);
-					await client.leaveGroup(gclist.contact.id);
-				}
-				client.reply(from, 'Sucesso!', id);
-				break;
-
-			case '!limpartudo':
-				if (!isOwner) return client.reply(from, 'Este comando é apenas para o dono do bot', id);
-				const allChatz = await client.getAllChats();
-				for (let dchat of allChatz) {
-					await client.deleteChat(dchat.id);
-				}
-				client.reply(from, 'Sucesso!', id);
-				break;
-
 			case '!adicionar':
 			case '!add':
 				const orang = args[1];
@@ -934,16 +968,31 @@ ${telefones}`;
 				if (!isGroupMsg) return client.reply(from, 'Este recurso só pode ser usado em grupos', id);
 				if (!isGroupAdmins) return client.reply(from, 'Este comando só pode ser usado por administradores de grupo', id);
 				if (!isBotGroupAdmins) return client.reply(from, 'Este comando só pode ser usado quando o bot se torna administrador', id);
-
-				if (mentionedJidList.length === 0) return client.reply(from, 'Para usar este comando, envie o comando *!ban* @tagmember', id);
-				await client.sendText(from, `Pronto! removido \n${mentionedJidList.join('\n')}`);
-
-				for (let i = 0; i < mentionedJidList.length; i++) {
-					if (groupAdmins.includes(mentionedJidList[i])) return client.reply(from, mess.error.Ki, id);
-
-					console.log('BANIDO ===>', mentionedJidList[i].replace(/@c.us/g, ''));
-					await client.removeParticipant(groupId, mentionedJidList[i]);
+				
+				if(quotedMsg) {
+					const banUser = quotedMsg.author;
+					const banUserName = quotedMsg.sender.pushname;
+					if (banUser == sender.id) return client.reply(from, 'Banindo a si mesmo? Ta loko?!', id);
+					if (banUser == chat.groupMetadata.owner) return client.reply(from, 'Você não pode banir o dono do grupo', id);
+					if (mentionedJidList.includes(ownerNumber[0])) return client.reply(from, 'Sabe algo que não vou fazer? Banir a mim mesmo!', id);
+					if (mentionedJidList.includes(liderNumber[0])) return client.reply(from, 'Sabe algo que não vou fazer? Banir a mim mesmo!', id);
+					await client.sendText(from, `Adeus ${banUserName}`);
+					await client.sendText(banUser, `Decidimos baní-lo do grupo ${formattedTitle}, lamento. 😿`);
+					await client.removeParticipant(groupId, banUser);
+				} else {
+					if (mentionedJidList.length === 0) return client.reply(from, 'Para usar este comando, envie o comando *!ban* @tagmember', id);
+					if (mentionedJidList.includes(chat.groupMetadata.owner)) return client.reply(from, 'Você não pode banir o dono do grupo', id);
+					if (mentionedJidList.includes(ownerNumber[0])) return client.reply(from, 'Sabe algo que não vou fazer? Banir a mim mesmo!', id);
+					if (mentionedJidList.includes(liderNumber[0])) return client.reply(from, 'Sabe algo que não vou fazer? Banir a mim mesmo!', id);
+					await client.sendText(from, `Pronto! removido \n${mentionedJidList.map(user => `@${user.replace(/@c.us/g, '')}`).join('\n')}`);
+					for (let i = 0; i < mentionedJidList.length; i++) {
+						if (groupAdmins.includes(mentionedJidList[i])) return client.reply(from, mess.error.Ki, id);
+						await client.sendText(mentionedJidList[i], `Você foi banido do grupo ${formattedTitle}, lamento. 😿`);
+						console.log('BANIDO ===>', mentionedJidList[i].replace(/@c.us/g, ''));
+						await client.removeParticipant(groupId, mentionedJidList[i]);
+					}
 				}
+
 				break;
 
 			case '!sair':
@@ -973,22 +1022,46 @@ ${telefones}`;
 				await client.demoteParticipant(groupId, mentionedJidList[0]);
 				await client.sendTextWithMentions(from, `Pedido recebido, excluir trabalho @${mentionedJidList[0]}.`);
 				break;
+
 			case '!apagar':
 				if (!isGroupMsg) return client.reply(from, 'Este recurso só pode ser usado em grupos', id);
-				if (!isGroupAdmins) return client.reply(from, 'Este recurso só pode ser usado por administradores de grupo', id);
-				if (!quotedMsg) return client.reply(from, 'Errado !!, envie o comando *!apagar [marqueamensagem] *', id);
-				if (!quotedMsgObj.fromMe) return client.reply(from, 'Errado !!, o bot não pode deletar o chat de outro usuário!', id);
+				if (!quotedMsg) return client.reply(from, 'Como vou saber o que devo apagar? Mencione uma mensagem minha', id);
+				const quotedMsgText = quotedMsg.body;
+				const quotedMsgIsConsulta = quotedMsgText.includes('=== CONSULTA REALIZADA ===');
+				if (!quotedMsgIsConsulta && !isGroupAdmins) return client.reply(from, 'Este recurso só pode ser usado por administradores de grupo', id);
 
-				await client.deleteMessage(quotedMsgObj.chatId, quotedMsgObj.id, false);
+				if (isGroupAdmins) {
+					await client.deleteMessage(quotedMsgObj.chatId, quotedMsgObj.id, false);
+				} else {
+					if (quotedMsgIsConsulta) {
+						const consultedFrom = quotedMsgText.split('Consultado por: ')[1];
+						if (consultedFrom == pushname || pushname == 'Kauã Landi') {
+							await client.deleteMessage(quotedMsgObj.chatId, quotedMsgObj.id, false);
+						} else {
+							return client.reply(from, 'Essa consulta não é sua, peça a um admin.', id);
+						}
+					} else {
+						if (!quotedMsgObj.fromMe) return client.reply(from, 'Eu não consigo deletar a mensagem de outro usuário!', id);
+						if (!isGroupAdmins) return client.reply(from, 'Este recurso só pode ser usado por administradores de grupo ou consultas feitas por você.', id);
+					}
+				}
 				break;
 
 			case '!ajuda':
 			case '!menu':
 			case '!help':
-				await client.sendText(from, help);
-				break;
+				const helpMode = args[1];
 
-			case '':
+				if(!helpMode) {
+					await client.sendText(from, helpers.help);
+				} else {
+					helpMode == 'audios' && await client.sendText(from, helpers.helpAudios);
+					helpMode == 'figurinhas' && await client.sendText(from, helpers.helpFigurinhas);
+					helpMode == 'papo' && await client.sendText(from, helpers.helpPapo);
+					helpMode == 'outros' && await client.sendText(from, helpers.helpOutros);
+					helpMode == 'grupos' && await client.sendText(from, helpers.helpGrupos);
+					helpMode == 'consultas' && await client.sendText(from, helpers.helpConsultas);
+				}
 				break;
 
 			case '!xagc':

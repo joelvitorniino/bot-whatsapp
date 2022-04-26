@@ -15,3 +15,5 @@ media/to/*.mp3
 # managed
 **_IGNORE_**
 # end managed
+
+.env
