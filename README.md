@@ -48,7 +48,6 @@ Leu o QR Code? Tudo certo!
 - Envia Stickert Gif
 - Envia Audios
 - Fala texto digitado
-- Tradutor
 - Horoscopo
 - Busca Concursos por estado
 - Busca CEP Brasil
