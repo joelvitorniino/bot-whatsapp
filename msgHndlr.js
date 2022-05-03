@@ -7,6 +7,9 @@ const { helpers } = require('./lib/help');
 const path = require('path');
 require('dotenv/config');
 
+const ytdl = require('ytdl-core');
+const ytsearch = require('youtube-search');
+
 const http = require('http');
 const https = require('https');
 const urlParse = require('url').parse;
@@ -45,6 +48,24 @@ const silenceBannedUsers = [
  * Send a query to the dialogflow agent, and return the query result.
  * @param {string} projectId The project to be used
  */
+
+function youtubeSearch(query) {
+	const options = {
+		maxResults: 1,
+		key: process.env.YT_KEY,
+	}
+	return new Promise((resolve, reject) => {
+		ytsearch(query, options, (err, results) => {
+			if (err) {
+				reject(err);
+			} else {
+				resolve(results[0]);
+			}
+		});
+	});
+}
+
+
 async function sendToDialogFlow(msg, session, params) {
 	let textToDialogFlow = msg;
 	try {
@@ -565,84 +586,6 @@ Consultado por: ${pushname}`;
 
 				break;
 
-			case '!yt':
-			case '!youtube':
-			case '!mp3':
-				try {
-					if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o devo fazer?', id);
-
-					const command = args[1];
-					const stringTail = args.slice(2).join(' ');
-
-					const YTResponse = await (youtube[command] || youtube.default)(stringTail, {
-						onFinished: (err, data) => {
-							client.sendFile(from, data?.file, '', 'AAAAAAAAAUHHH', id);
-						},
-						onProgres: (info) => console.log(info),
-						onError: (error) => client.reply(from, `Mano, deu pau. Manda esse erro aqui pro Tramonta:\n${error}`),
-					});
-
-					client.reply(from, YTZaplify(YTResponse), id);
-				} catch (e) {
-					client.reply(from, `Deu merda man, mostra isso aq pro tramonta...\n${JSON.stringify(e)}`, id);
-				}
-				break;
-
-			case '!horoscopo':
-			case '!horóscopo':
-				if (args.length === 1) return client.reply(from, 'Como eu vou adivinhar o horoscopo?', id);
-				await client.reply(from, 'Buscando o horoscopo... pera um pouco', id);
-
-				let horoscopo = await axios.get(`https://horoscopefree.herokuapp.com/daily/pt/`);
-				const { publish, language, aries, taurus, gemini, cancer, leo, scorpio, libra, sagittarius, capricorn, aquarius, pisces, virgo } =
-					horoscopo.data;
-				switch (args[1]) {
-					case 'aries':
-						await client.sendText(from, `${aries}`);
-						break;
-					case 'touro':
-						await client.sendText(from, `${taurus}`);
-						break;
-					case 'gemios':
-					case 'gêmios':
-						await client.sendText(from, `${gemini}`);
-						break;
-					case 'cancer':
-					case 'câncer':
-						await client.sendText(from, `${cancer}`);
-						break;
-					case 'leao':
-					case 'leão':
-						await client.sendText(from, `${leo}`);
-						break;
-					case 'escorpiao':
-					case 'escorpião':
-						await client.sendText(from, `${scorpio}`);
-						break;
-					case 'libra':
-						await client.sendText(from, `${libra}`);
-						break;
-					case 'sagitario':
-					case 'sagitário':
-						await client.sendText(from, `${sagittarius}`);
-						break;
-					case 'capricornio':
-						await client.sendText(from, `${capricorn}`);
-						break;
-					case 'aquario':
-					case 'aquário':
-						await client.sendText(from, `${aquarius}`);
-						break;
-					case 'peixes':
-						await client.sendText(from, `${pisces}`);
-					case 'virgem':
-						await client.sendText(from, `${virgo}`);
-						break;
-					default:
-						await client.sendText(from, `Não encontrei nada...`);
-				}
-				break;
-
 			// case '!limpeza':
 			// 	if (!isGroupMsg) return client.reply(from, 'Este comando só pode ser usado em grupos!', id);
 			// 	if (!isGroupAdmins) return client.reply(from, 'Este comando só pode ser usado pelo grupo Admin!', id);
@@ -677,7 +620,10 @@ Consultado por: ${pushname}`;
 			// 	break;
 
 			case '!buscamemes':
+			case '!buscarmemes':
 			case '!buscameme':
+			case '!buscarmeme':
+				if (isGroupMsg) return client.reply(from, 'Se eu rodar esse comando aqui vai floodar tudo. Melhor só no meu privado! Você vai poder fazer ele (com *!escrevememe*) no grupo.', id);
 				await client.reply(from, `Vasculhando a internet... pera um pouco`, id);
 
 				let meme = await axios.get(`https://api.imgflip.com/get_memes`);
