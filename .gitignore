@@ -16,9 +16,13 @@ media/to/*.mp3
 **_IGNORE_**
 # end managed
 
+<<<<<<< HEAD
 .env
 
 .zip
 .rar
 
 baileys_store_multi.json
+=======
+.env
+>>>>>>> 69c8dbd6a3b32fe060a44375e3ae710f8eb07fa3

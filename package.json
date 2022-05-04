@@ -6,15 +6,23 @@
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
+<<<<<<< HEAD
     "dev": "ts-node-dev ./index.ts"
+=======
+    "dev": "nodemon index.js"
+>>>>>>> 69c8dbd6a3b32fe060a44375e3ae710f8eb07fa3
   },
   "author": "Jonathan",
   "license": "Apache-2.0",
   "dependencies": {
+<<<<<<< HEAD
     "@adiwajshing/baileys": "^4.1.0",
     "@adiwajshing/keyed-db": "^0.2.4",
     "@hapi/boom": "^10.0.0",
     "@open-wa/wa-automate": "^4.35.13",
+=======
+    "@open-wa/wa-automate": "^4.20.6",
+>>>>>>> 69c8dbd6a3b32fe060a44375e3ae710f8eb07fa3
     "@open-wa/wa-decrypt": "^2.0.1",
     "axios": "^0.21.2",
     "brainly-scraper": "^1.0.2",
@@ -27,10 +35,14 @@
     "got": "^11.7.0",
     "moment-timezone": "^0.5.31",
     "node-fetch": "^2.6.1",
+<<<<<<< HEAD
     "pino": "^7.11.0",
     "qrcode-terminal": "^0.12.0",
     "request": "^2.88.2",
     "typescript": "^4.6.4",
+=======
+    "request": "^2.88.2",
+>>>>>>> 69c8dbd6a3b32fe060a44375e3ae710f8eb07fa3
     "youtube-mp3-downloader": "^0.7.10",
     "youtube-search": "^1.1.6",
     "ytdl-core": "^4.11.0"

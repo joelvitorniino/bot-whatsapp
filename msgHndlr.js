@@ -1207,7 +1207,11 @@ Consultado por: ${pushname}`;
 
 function downloadFile(url, dest) {
 	return new Promise((resolve, reject) => {
+<<<<<<< HEAD
 		const info = new URL(url);
+=======
+		const info = urlParse(url);
+>>>>>>> 69c8dbd6a3b32fe060a44375e3ae710f8eb07fa3
 		const httpClient = info.protocol === 'https:' ? https : http;
 		const options = {
 			host: info.host,
