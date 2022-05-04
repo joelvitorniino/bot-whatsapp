@@ -79,7 +79,7 @@ const startSock = async () => {
 	return sock
 };
 
-startSock();
+startSock();;
 
 // const start = async (client = new Client()) => {
 
